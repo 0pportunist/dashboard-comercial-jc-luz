@@ -25,7 +25,17 @@ No Windows, também é possível executar `INICIAR DASHBOARD.cmd`.
 - `src/data/rankings.ts`: rankings e resumo do relatório de produção.
 - `src/data/teams.ts`: departamentos, equipes e supervisores.
 - `src/components`: componentes reutilizáveis do dashboard.
+- `src/assets/team-logos`: logos das equipes e imagem padrão.
 - `public/campaigns`: artes oficiais das campanhas.
+
+## Logos das equipes
+
+Coloque as imagens em `src/assets/team-logos` usando exatamente o mesmo nome cadastrado em `src/data/teams.ts`.
+Por exemplo, a equipe `Equipe Alpha` deve usar um arquivo como `Equipe Alpha.png` ou `Equipe Alpha.jpg`.
+
+São aceitos arquivos `.png`, `.jpg`, `.jpeg` e `.svg`. O Vite encontra as imagens automaticamente por meio de
+`src/utils/getTeamLogo.ts`, portanto não é necessário alterar imports ou componentes ao adicionar uma nova logo.
+Quando nenhuma imagem correspondente é encontrada, o dashboard usa `default-logo.svg`.
 
 ## Dados
 
