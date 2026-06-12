@@ -10,6 +10,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
+// Este projeto usa somente Firebase Authentication. Analytics nao e inicializado.
 export const isFirebaseConfigured = Object.values(firebaseConfig).every(Boolean)
 
 export const app: FirebaseApp | null = isFirebaseConfigured
