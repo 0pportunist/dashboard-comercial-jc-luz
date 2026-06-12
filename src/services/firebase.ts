@@ -19,3 +19,5 @@ export const app: FirebaseApp | null = isFirebaseConfigured
   : null
 
 export const auth: Auth | null = app ? getAuth(app) : null
+
+export default app
