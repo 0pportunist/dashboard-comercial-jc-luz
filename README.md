@@ -39,6 +39,14 @@ Abra `http://localhost:5173/login`, digite a senha definida em `VITE_ADMIN_PASSW
 
 No Windows, também é possível executar `INICIAR DASHBOARD.cmd`.
 
+### Acesso na rede local
+
+O servidor de desenvolvimento escuta em todas as interfaces de rede. Ao iniciar, o Vite e o script do Windows
+mostram um endereço como `http://192.168.0.142:5173`. Colegas conectados à mesma rede podem abrir esse endereço.
+
+Se outro dispositivo não conseguir acessar, permita conexões TCP de entrada na porta `5173` no Firewall do Windows.
+O computador que executa o dashboard deve permanecer ligado e com o servidor Vite em execução.
+
 ## Estrutura principal
 
 - `src/contexts/AuthContext.tsx`: autenticação em memória e comparação da senha.

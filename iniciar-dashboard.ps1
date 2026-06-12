@@ -2,7 +2,16 @@ $ErrorActionPreference = 'Stop'
 
 $projectPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $port = 5173
-$url = "http://127.0.0.1:$port"
+$localUrl = "http://localhost:$port"
+$networkAddress = Get-NetIPAddress -AddressFamily IPv4 |
+  Where-Object {
+    $_.IPAddress -notlike '127.*' -and
+    $_.IPAddress -notlike '169.254.*' -and
+    $_.PrefixOrigin -ne 'WellKnown'
+  } |
+  Sort-Object InterfaceMetric |
+  Select-Object -First 1 -ExpandProperty IPAddress
+$networkUrl = if ($networkAddress) { "http://${networkAddress}:$port" } else { $null }
 $logDirectory = Join-Path $projectPath '.logs'
 $stdoutLog = Join-Path $logDirectory 'vite.log'
 $stderrLog = Join-Path $logDirectory 'vite-error.log'
@@ -11,8 +20,11 @@ New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
 
 $listener = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
 if ($listener) {
-  Start-Process $url
-  Write-Host "Dashboard ja esta rodando em $url"
+  Start-Process $localUrl
+  Write-Host "Dashboard ja esta rodando em $localUrl"
+  if ($networkUrl) {
+    Write-Host "Acesso na rede local: $networkUrl"
+  }
   exit 0
 }
 
@@ -36,7 +48,7 @@ Remove-Item $stdoutLog, $stderrLog -Force -ErrorAction SilentlyContinue
 
 Start-Process `
   -FilePath $nodeExecutable `
-  -ArgumentList "`"$viteEntry`" --host 127.0.0.1 --port $port --strictPort" `
+  -ArgumentList "`"$viteEntry`" --host 0.0.0.0 --port $port --strictPort" `
   -WorkingDirectory $projectPath `
   -WindowStyle Hidden `
   -RedirectStandardOutput $stdoutLog `
@@ -46,7 +58,7 @@ $isReady = $false
 for ($attempt = 0; $attempt -lt 20; $attempt++) {
   Start-Sleep -Milliseconds 500
   try {
-    $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
+    $response = Invoke-WebRequest -Uri $localUrl -UseBasicParsing -TimeoutSec 2
     if ($response.StatusCode -eq 200) {
       $isReady = $true
       break
@@ -61,5 +73,8 @@ if (-not $isReady) {
   throw "O dashboard nao iniciou corretamente. Consulte $stderrLog. $details"
 }
 
-Start-Process $url
-Write-Host "Dashboard iniciado em $url"
+Start-Process $localUrl
+Write-Host "Dashboard iniciado em $localUrl"
+if ($networkUrl) {
+  Write-Host "Compartilhe com a equipe: $networkUrl"
+}
