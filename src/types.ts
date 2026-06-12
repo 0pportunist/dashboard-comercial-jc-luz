@@ -58,3 +58,12 @@ export interface SalesTeam {
   reportName: string
   dataWarning?: string
 }
+
+export type AuthRole = 'admin' | 'supervisor' | 'corretor'
+
+export interface AccessProfile {
+  role: AuthRole
+  teamId?: string
+  brokerName?: string
+  source: 'claim' | 'email-map' | 'default'
+}
