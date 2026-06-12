@@ -24,7 +24,6 @@ import { OperatorFilters } from '../components/OperatorFilters'
 import { RankingTable } from '../components/RankingTable'
 import { RealtimeSalesButton } from '../components/RealtimeSalesButton'
 import { TeamsSection } from '../components/TeamsSection'
-import { RoleGuard } from '../components/auth/RoleGuard'
 import { useAuth } from '../contexts/AuthContext'
 import { campaigns } from '../data/campaigns'
 import { brokerRankings, productionReport, supervisorRankings } from '../data/rankings'
@@ -41,17 +40,8 @@ const currency = new Intl.NumberFormat('pt-BR', {
   maximumFractionDigits: 2,
 })
 
-function normalizeName(value: string) {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase()
-    .trim()
-}
-
 export function Dashboard() {
-  const { user, role: authenticatedRole, accessProfile, signOut } = useAuth()
-  const role = authenticatedRole ?? 'corretor'
+  const { logout } = useAuth()
   const [selectedOperator, setSelectedOperator] = useState('Todas')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Todos')
@@ -64,53 +54,15 @@ export function Dashboard() {
   const teamsRef = useRef<HTMLDivElement>(null)
   const campaignsRef = useRef<HTMLElement>(null)
 
-  const currentTeam = useMemo(
-    () => salesTeams.find((team) => team.id === accessProfile?.teamId),
-    [accessProfile?.teamId],
-  )
-
-  const currentBroker = useMemo(
-    () => brokerRankings.find(
-      (broker) => accessProfile?.brokerName
-        && normalizeName(broker.name) === normalizeName(accessProfile.brokerName),
-    ),
-    [accessProfile?.brokerName],
-  )
-
-  const authorizedCampaigns = useMemo(() => {
-    if (role === 'admin') return campaigns
-    const targetAudience = role === 'supervisor' ? 'Supervisores' : 'Corretores'
-    return campaigns.filter(
-      (campaign) => campaign.audience === 'Todos' || campaign.audience === targetAudience,
-    )
-  }, [role])
-
-  const authorizedBrokers = useMemo(() => {
-    if (role === 'admin') return brokerRankings
-    if (role === 'supervisor' && currentTeam) {
-      return brokerRankings.filter((broker) => broker.team === currentTeam.name)
-    }
-    return currentBroker ? [currentBroker] : []
-  }, [currentBroker, currentTeam, role])
-
-  const authorizedSupervisors = useMemo(() => {
-    if (role === 'admin') return supervisorRankings
-    if (role === 'supervisor' && currentTeam) {
-      return supervisorRankings.filter((supervisor) => supervisor.team === currentTeam.name)
-    }
-    return []
-  }, [currentTeam, role])
-
-  const authorizedTeams = role === 'admin' ? salesTeams : currentTeam ? [currentTeam] : []
-  const visibleOperators = [...new Set(authorizedCampaigns.flatMap((campaign) => campaign.operators))]
-  const activeCampaigns = authorizedCampaigns.filter((campaign) => campaign.status === 'Ativa')
-  const futureCampaigns = authorizedCampaigns.filter((campaign) => campaign.status === 'Futura')
-  const endedCampaigns = authorizedCampaigns.filter((campaign) => campaign.status === 'Encerrada')
+  const visibleOperators = [...new Set(campaigns.flatMap((campaign) => campaign.operators))]
+  const activeCampaigns = campaigns.filter((campaign) => campaign.status === 'Ativa')
+  const futureCampaigns = campaigns.filter((campaign) => campaign.status === 'Futura')
+  const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')
   const closestEnding = [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0]
 
   const filteredCampaigns = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
-    return authorizedCampaigns.filter((campaign) => {
+    return campaigns.filter((campaign) => {
       const matchesQuery = !normalizedQuery || campaign.name.toLocaleLowerCase('pt-BR').includes(normalizedQuery)
       const matchesOperator = selectedOperator === 'Todas' || campaign.operators.includes(selectedOperator)
       const matchesStatus = status === 'Todos' || campaign.status === status
@@ -118,13 +70,13 @@ export function Dashboard() {
       const matchesAudience = audience === 'Todos' || campaign.audience === audience || campaign.audience === 'Todos'
       return matchesQuery && matchesOperator && matchesStatus && matchesPrize && matchesAudience
     })
-  }, [audience, authorizedCampaigns, prizeType, query, selectedOperator, status])
+  }, [audience, prizeType, query, selectedOperator, status])
 
   useEffect(() => {
-    if (!selectedCampaign || !authorizedCampaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
-      setSelectedCampaign(authorizedCampaigns[0] ?? null)
+    if (!selectedCampaign || !campaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
+      setSelectedCampaign(campaigns[0] ?? null)
     }
-  }, [authorizedCampaigns, selectedCampaign])
+  }, [selectedCampaign])
 
   const scrollTo = (ref: RefObject<HTMLElement | HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -145,72 +97,35 @@ export function Dashboard() {
         onCampaignsClick={() => scrollTo(campaignsRef)}
         onRankingsClick={() => scrollTo(rankingsRef)}
         onTeamsClick={() => scrollTo(teamsRef)}
-        onSignOut={() => void signOut()}
-        userName={user?.displayName || user?.email || 'Usuário'}
-        userPhoto={user?.photoURL}
-        role={role}
-        showTeams={role !== 'corretor'}
+        onSignOut={logout}
       />
 
       <main className="mx-auto max-w-[1440px] px-4 pb-14 sm:px-6 lg:px-8">
         <section ref={overviewRef} className="-mt-1 scroll-mt-5 py-5">
-          {role === 'admin' && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
-              <MetricCard label="Total de campanhas" value={authorizedCampaigns.length} helper="no calendário comercial" icon={Layers3} tone="blue" />
-              <MetricCard label="Campanhas ativas" value={activeCampaigns.length} helper="em andamento agora" icon={Activity} tone="lime" />
-              <MetricCard label="Campanhas futuras" value={futureCampaigns.length} helper="próximos lançamentos" icon={Clock3} tone="blue" />
-              <MetricCard label="Encerradas" value={endedCampaigns.length} helper="ciclos concluídos" icon={CheckCircle2} tone="slate" />
-              <MetricCard label="Operadoras" value={visibleOperators.length} helper="parceiras participantes" icon={Building2} tone="gold" />
-              <MetricCard label="Mais próxima do fim" value={closestEnding?.shortName ?? '—'} helper={closestEnding ? `até ${closestEnding.period.split('—')[1]?.trim()}` : 'sem campanha ativa'} icon={CalendarClock} tone="gold" />
-            </div>
-          )}
-
-          {role === 'supervisor' && (
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-              <MetricCard label="Equipe" value={currentTeam?.name.replace('Equipe ', '') ?? 'Não vinculada'} helper="acesso do supervisor" icon={UsersRound} tone="blue" />
-              <MetricCard label="Mensalidade" value={currency.format(currentTeam?.value ?? 0)} helper="produção de maio" icon={ReceiptText} tone="lime" />
-              <MetricCard label="Contratos" value={currentTeam?.contracts ?? 0} helper="equipe autorizada" icon={UserRoundCheck} tone="blue" />
-              <MetricCard label="Vidas" value={(currentTeam?.lives ?? 0).toLocaleString('pt-BR')} helper="equipe autorizada" icon={Activity} tone="gold" />
-              <MetricCard label="Campanhas" value={authorizedCampaigns.length} helper="elegíveis ao perfil" icon={Layers3} tone="slate" />
-            </div>
-          )}
-
-          {role === 'corretor' && (
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-              <MetricCard label="Minha mensalidade" value={currency.format(currentBroker?.value ?? 0)} helper="produção de maio" icon={ReceiptText} tone="lime" />
-              <MetricCard label="Meus contratos" value={currentBroker?.sales ?? 0} helper="produção individual" icon={UserRoundCheck} tone="blue" />
-              <MetricCard label="Minhas vidas" value={currentBroker?.lives ?? 0} helper="produção individual" icon={Activity} tone="gold" />
-              <MetricCard label="Campanhas elegíveis" value={authorizedCampaigns.length} helper="corretores e público geral" icon={Layers3} tone="slate" />
-            </div>
-          )}
-
-          {role !== 'admin' && !currentTeam && !currentBroker && (
-            <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800">
-              Seu acesso foi autenticado, mas ainda não há vínculo de dados para {user?.email}. Configure o mapeamento por e-mail ou as custom claims no Firebase.
-            </p>
-          )}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+            <MetricCard label="Total de campanhas" value={campaigns.length} helper="no calendário comercial" icon={Layers3} tone="blue" />
+            <MetricCard label="Campanhas ativas" value={activeCampaigns.length} helper="em andamento agora" icon={Activity} tone="lime" />
+            <MetricCard label="Campanhas futuras" value={futureCampaigns.length} helper="próximos lançamentos" icon={Clock3} tone="blue" />
+            <MetricCard label="Encerradas" value={endedCampaigns.length} helper="ciclos concluídos" icon={CheckCircle2} tone="slate" />
+            <MetricCard label="Operadoras" value={visibleOperators.length} helper="parceiras participantes" icon={Building2} tone="gold" />
+            <MetricCard label="Mais próxima do fim" value={closestEnding?.shortName ?? '—'} helper={closestEnding ? `até ${closestEnding.period.split('—')[1]?.trim()}` : 'sem campanha ativa'} icon={CalendarClock} tone="gold" />
+          </div>
         </section>
 
         <section className="flex flex-col gap-3 lg:flex-row">
           <div className="min-w-0 flex-1">
             <OperatorFilters operators={visibleOperators} selected={selectedOperator} onChange={setSelectedOperator} />
           </div>
-          <RoleGuard allowedRoles={['admin']}>
-            <RealtimeSalesButton onClick={() => setRealtimeModal(true)} />
-          </RoleGuard>
+          <RealtimeSalesButton onClick={() => setRealtimeModal(true)} />
         </section>
 
         <section ref={rankingsRef} className="mt-7 scroll-mt-5">
-          <RoleGuard allowedRoles={['admin']}>
-            <ProductionReport />
-          </RoleGuard>
+          <ProductionReport />
 
           <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-blue-700">Desempenho autorizado</p>
-              <h2 className="mt-1 text-2xl font-black tracking-tight text-navy-950">
-                {role === 'admin' ? 'Ranking comercial' : role === 'supervisor' ? currentTeam?.name ?? 'Minha equipe' : 'Meu resultado'}
-              </h2>
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-blue-700">Desempenho comercial</p>
+              <h2 className="mt-1 text-2xl font-black tracking-tight text-navy-950">Ranking comercial</h2>
             </div>
             <button
               onClick={() => scrollTo(campaignsRef)}
@@ -220,36 +135,32 @@ export function Dashboard() {
             </button>
           </div>
 
-          <div className={`grid gap-5 ${role === 'corretor' ? '' : 'xl:grid-cols-2'}`}>
+          <div className="grid gap-5 xl:grid-cols-2">
             <RankingTable
-              title={role === 'corretor' ? 'Minha produção - Maio' : 'Corretores - Maio'}
-              subtitle={role === 'admin' ? 'Base CLT e Salão' : 'Dados filtrados pelo seu acesso'}
-              data={authorizedBrokers}
+              title="Corretores - Maio"
+              subtitle="Base CLT e Salão"
+              data={brokerRankings}
               type="broker"
             />
-            {role !== 'corretor' && (
-              <RankingTable
-                title={role === 'admin' ? 'Supervisores - Maio' : 'Resultado da equipe'}
-                subtitle={role === 'admin' ? 'Base consolidada de todas as equipes' : 'Consolidado da equipe autorizada'}
-                data={authorizedSupervisors}
-                type="supervisor"
-              />
-            )}
+            <RankingTable
+              title="Supervisores - Maio"
+              subtitle="Base consolidada de todas as equipes"
+              data={supervisorRankings}
+              type="supervisor"
+            />
           </div>
         </section>
 
-        <RoleGuard allowedRoles={['admin', 'supervisor']}>
-          <div ref={teamsRef} className="scroll-mt-5 pt-12">
-            <TeamsSection teams={authorizedTeams} />
-          </div>
-        </RoleGuard>
+        <div ref={teamsRef} className="scroll-mt-5 pt-12">
+          <TeamsSection teams={salesTeams} />
+        </div>
 
         <section ref={campaignsRef} className="scroll-mt-5 pt-12">
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-blue-700">Portfólio de incentivos</p>
               <h2 className="mt-1 text-3xl font-black tracking-tight text-navy-950">Campanhas comerciais</h2>
-              <p className="mt-2 text-sm text-slate-500">Campanhas disponíveis para o seu nível de acesso.</p>
+              <p className="mt-2 text-sm text-slate-500">Campanhas disponíveis para acompanhamento administrativo.</p>
             </div>
             <div className="relative w-full lg:w-80">
               <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -268,9 +179,7 @@ export function Dashboard() {
             </div>
             <FilterSelect label="Status" value={status} options={statusOptions} onChange={(value) => setStatus(value as CampaignStatus | 'Todos')} />
             <FilterSelect label="Prêmio" value={prizeType} options={prizeOptions} onChange={(value) => setPrizeType(value as PrizeType | 'Todos')} />
-            {role === 'admin' && (
-              <FilterSelect label="Público" value={audience} options={audienceOptions} onChange={(value) => setAudience(value as Audience | 'Todos')} />
-            )}
+            <FilterSelect label="Público" value={audience} options={audienceOptions} onChange={(value) => setAudience(value as Audience | 'Todos')} />
             <span className="ml-auto px-2 text-xs font-bold text-slate-400">{filteredCampaigns.length} resultado(s)</span>
           </div>
 
@@ -294,7 +203,7 @@ export function Dashboard() {
       <footer className="border-t border-slate-200 bg-white py-6">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-2 px-4 text-xs text-slate-400 sm:flex-row sm:px-6 lg:px-8">
           <p>© 2026 JC Luz Corretora de Seguros.</p>
-          <p className="font-semibold">Acesso: {role}</p>
+          <p className="font-semibold">Acesso administrativo local</p>
         </div>
       </footer>
 

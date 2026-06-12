@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
-import { FirebaseError } from 'firebase/app'
-import { Chrome, LockKeyhole, ShieldCheck } from 'lucide-react'
+import { useState, type FormEvent } from 'react'
+import { Eye, EyeOff, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -10,52 +9,29 @@ interface LocationState {
   }
 }
 
-function getSignInErrorMessage(error: unknown) {
-  if (!(error instanceof FirebaseError)) {
-    return error instanceof Error ? error.message : 'Não foi possível entrar com o Google.'
-  }
-
-  const messages: Record<string, string> = {
-    'auth/operation-not-allowed': 'O login com Google ainda não foi habilitado no Firebase Authentication.',
-    'auth/unauthorized-domain': `O endereço ${window.location.hostname} não está autorizado no Firebase. Adicione-o em Authentication > Settings > Authorized domains.`,
-    'auth/popup-blocked': 'O navegador bloqueou a janela de login. Permita pop-ups para este endereço e tente novamente.',
-    'auth/popup-closed-by-user': 'A janela de login foi fechada antes da conclusão.',
-    'auth/cancelled-popup-request': 'Outra tentativa de login já está em andamento.',
-    'auth/network-request-failed': 'Não foi possível acessar o Firebase. Verifique a internet e tente novamente.',
-    'auth/invalid-api-key': 'A chave VITE_FIREBASE_API_KEY do arquivo .env não é válida.',
-  }
-
-  return messages[error.code] ?? `Falha no login com Google (${error.code}).`
-}
-
 export function Login() {
-  const { user, loading, signInWithGoogle, isConfigured } = useAuth()
+  const { isAuthenticated, isConfigured, login } = useAuth()
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const destination = (location.state as LocationState | null)?.from?.pathname ?? '/dashboard'
 
-  useEffect(() => {
-    if (!loading && user) {
-      navigate(destination, { replace: true })
-    }
-  }, [destination, loading, navigate, user])
-
-  if (!loading && user) {
+  if (isAuthenticated) {
     return <Navigate to={destination} replace />
   }
 
-  async function handleGoogleSignIn() {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
     setError('')
-    setSubmitting(true)
-    try {
-      await signInWithGoogle()
-    } catch (signInError) {
-      setError(getSignInErrorMessage(signInError))
-    } finally {
-      setSubmitting(false)
+
+    if (login(password)) {
+      navigate(destination, { replace: true })
+      return
     }
+
+    setError(isConfigured ? 'Senha incorreta.' : 'Defina VITE_ADMIN_PASSWORD no arquivo .env e reinicie o servidor.')
   }
 
   return (
@@ -72,25 +48,43 @@ export function Login() {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-limebrand">Dashboard Comercial</p>
             </div>
           </div>
-          <h1 className="mt-8 text-3xl font-black tracking-tight">Acesse sua área comercial</h1>
+          <h1 className="mt-8 text-3xl font-black tracking-tight">Acesso administrativo</h1>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Entre com sua conta Google autorizada para visualizar campanhas, equipe e desempenho.
+            Digite a senha de administrador para acessar campanhas, equipes e desempenho.
           </p>
         </div>
 
-        <div className="p-7">
+        <form onSubmit={handleSubmit} className="p-7">
           <div className="flex items-start gap-3 rounded-2xl bg-blue-50 p-4">
             <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-blue-700" />
             <p className="text-xs leading-5 text-slate-600">
-              O conteúdo exibido será ajustado automaticamente ao seu nível de acesso.
+              O acesso não é salvo. Ao atualizar ou fechar a aba, a senha será solicitada novamente.
             </p>
           </div>
 
-          {!isConfigured && (
-            <p className="mt-4 rounded-xl bg-amber-50 p-3 text-xs font-semibold leading-5 text-amber-800">
-              Firebase ainda não configurado. Preencha as variáveis VITE_FIREBASE_* no arquivo .env.
-            </p>
-          )}
+          <label className="mt-6 block">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Senha</span>
+            <span className="relative mt-2 block">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                autoFocus
+                required
+                placeholder="Digite a senha administrativa"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-4 pr-12 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((current) => !current)}
+                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-navy-900"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </span>
+          </label>
 
           {error && (
             <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs font-semibold leading-5 text-red-700">
@@ -99,15 +93,14 @@ export function Login() {
           )}
 
           <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={submitting || !isConfigured}
+            type="submit"
+            disabled={!password}
             className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-navy-900 px-4 py-3.5 text-sm font-black text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Chrome className="h-5 w-5" />
-            {submitting ? 'Entrando...' : 'Entrar com o Google'}
+            <LockKeyhole className="h-5 w-5" />
+            Entrar
           </button>
-        </div>
+        </form>
       </section>
     </main>
   )

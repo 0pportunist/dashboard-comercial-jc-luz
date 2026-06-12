@@ -1,5 +1,4 @@
 import { CalendarDays, LogOut, ShieldCheck } from 'lucide-react'
-import type { AuthRole } from '../types'
 
 interface DashboardHeaderProps {
   onOverviewClick: () => void
@@ -7,16 +6,6 @@ interface DashboardHeaderProps {
   onRankingsClick: () => void
   onTeamsClick: () => void
   onSignOut: () => void
-  userName: string
-  userPhoto?: string | null
-  role: AuthRole
-  showTeams: boolean
-}
-
-const roleLabels: Record<AuthRole, string> = {
-  admin: 'Administrador',
-  supervisor: 'Supervisor',
-  corretor: 'Corretor',
 }
 
 export function DashboardHeader({
@@ -25,10 +14,6 @@ export function DashboardHeader({
   onRankingsClick,
   onTeamsClick,
   onSignOut,
-  userName,
-  userPhoto,
-  role,
-  showTeams,
 }: DashboardHeaderProps) {
   return (
     <header className="relative overflow-hidden bg-navy-950 text-white">
@@ -51,28 +36,22 @@ export function DashboardHeader({
             <button onClick={onOverviewClick} className="transition hover:text-white">Visão geral</button>
             <button onClick={onCampaignsClick} className="transition hover:text-white">Campanhas</button>
             <button onClick={onRankingsClick} className="transition hover:text-white">Rankings</button>
-            {showTeams && <button onClick={onTeamsClick} className="transition hover:text-white">Equipes</button>}
+            <button onClick={onTeamsClick} className="transition hover:text-white">Equipes</button>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1.5 text-xs font-semibold text-slate-200">
-              {userPhoto ? (
-                <img src={userPhoto} alt="" className="h-8 w-8 rounded-full object-cover" referrerPolicy="no-referrer" />
-              ) : (
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-goldbrand font-black text-navy-950">
-                  {userName.slice(0, 2).toUpperCase()}
-                </span>
-              )}
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-goldbrand font-black text-navy-950">AD</span>
               <span className="hidden max-w-32 truncate sm:block">
-                {userName}
-                <span className="block text-[9px] uppercase tracking-wider text-limebrand">{roleLabels[role]}</span>
+                Administração
+                <span className="block text-[9px] uppercase tracking-wider text-limebrand">Acesso local</span>
               </span>
             </div>
             <button
               onClick={onSignOut}
-              aria-label="Sair"
-              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
               <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Sair</span>
             </button>
           </div>
         </nav>
