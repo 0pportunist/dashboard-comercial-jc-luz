@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { salesTeams } from '../data/teams'
 import type { SalesDepartment } from '../types'
+import { getTeamLogo } from '../utils/getTeamLogo'
 
 const currency = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -105,8 +106,12 @@ export function TeamsSection() {
             <article key={team.id} className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-card">
               <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-5">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy-900 font-black text-limebrand">
-                    {team.name.replace('Equipe ', '').slice(0, 2).toUpperCase()}
+                  <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-100 bg-white p-1 shadow-sm">
+                    <img
+                      src={team.logo ?? getTeamLogo(team.name)}
+                      alt={`Logo da ${team.name}`}
+                      className="h-full w-full object-contain"
+                    />
                   </div>
                   <div className="min-w-0">
                     <h3 className="truncate font-black text-navy-950">{team.name}</h3>
