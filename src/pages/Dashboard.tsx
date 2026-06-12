@@ -50,7 +50,8 @@ function normalizeName(value: string) {
 }
 
 export function Dashboard() {
-  const { user, role = 'corretor', accessProfile, signOut } = useAuth()
+  const { user, role: authenticatedRole, accessProfile, signOut } = useAuth()
+  const role = authenticatedRole ?? 'corretor'
   const [selectedOperator, setSelectedOperator] = useState('Todas')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Todos')
