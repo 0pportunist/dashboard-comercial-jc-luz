@@ -38,6 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false)
+      return
+    }
+
     return onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser)
 
@@ -65,12 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     isConfigured: isFirebaseConfigured,
     signInWithGoogle: async () => {
-      if (!isFirebaseConfigured) {
+      if (!auth || !isFirebaseConfigured) {
         throw new Error('Firebase não configurado. Preencha as variáveis VITE_FIREBASE_* no arquivo .env.')
       }
       await signInWithPopup(auth, googleProvider)
     },
-    signOut: () => firebaseSignOut(auth),
+    signOut: () => auth ? firebaseSignOut(auth) : Promise.resolve(),
   }), [accessProfile, loading, user])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
