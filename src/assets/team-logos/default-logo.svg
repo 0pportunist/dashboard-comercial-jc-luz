@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">Logo padrão de equipe</title>
+  <rect width="96" height="96" rx="24" fill="#071f4a"/>
+  <circle cx="48" cy="38" r="16" fill="#b7f20a"/>
+  <path d="M20 78c3-17 14-27 28-27s25 10 28 27" fill="#b7f20a"/>
+  <path d="M48 23l4.5 9.1 10 1.5-7.2 7 1.7 9.9-9-4.7-9 4.7 1.7-9.9-7.2-7 10-1.5z" fill="#fff"/>
+</svg>
