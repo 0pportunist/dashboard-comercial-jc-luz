@@ -47,6 +47,7 @@ export type SalesDepartment = 'Vendas G1' | 'Vendas G2' | 'Vendas Externas'
 export interface SalesTeam {
   id: string
   name: string
+  logo?: string
   supervisor: string
   role: string
   department: SalesDepartment

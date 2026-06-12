@@ -1,6 +1,7 @@
 import type { SalesTeam } from '../types'
+import { getTeamLogo } from '../utils/getTeamLogo'
 
-export const salesTeams: SalesTeam[] = [
+const teamDefinitions: SalesTeam[] = [
   {
     id: 'equipe-titas',
     name: 'Equipe Titãs',
@@ -184,3 +185,8 @@ export const salesTeams: SalesTeam[] = [
     reportName: 'ALTAIR DE OLIVEIRA DA SILVA',
   },
 ]
+
+export const salesTeams: SalesTeam[] = teamDefinitions.map((team) => ({
+  ...team,
+  logo: getTeamLogo(team.name),
+}))
