@@ -1,82 +1,28 @@
-import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut as firebaseSignOut,
-  type User,
-} from 'firebase/auth'
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { resolveAccessProfile } from '../config/accessControl'
-import { auth, isFirebaseConfigured } from '../services/firebase'
-import type { AccessProfile, AuthRole } from '../types'
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 
 interface AuthContextValue {
-  user: User | null
-  role: AuthRole | null
-  accessProfile: AccessProfile | null
-  loading: boolean
+  isAuthenticated: boolean
   isConfigured: boolean
-  signInWithGoogle: () => Promise<void>
-  signOut: () => Promise<void>
+  login: (password: string) => boolean
+  logout: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
-const googleProvider = new GoogleAuthProvider()
-googleProvider.setCustomParameters({ prompt: 'select_account' })
-
-async function getAccessProfile(user: User) {
-  const tokenResult = await user.getIdTokenResult()
-  return resolveAccessProfile({
-    email: user.email,
-    claims: tokenResult.claims,
-  })
-}
+const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD?.trim() ?? ''
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [accessProfile, setAccessProfile] = useState<AccessProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (!auth) {
-      setLoading(false)
-      return
-    }
-
-    return onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser)
-
-      if (!currentUser) {
-        setAccessProfile(null)
-        setLoading(false)
-        return
-      }
-
-      try {
-        setAccessProfile(await getAccessProfile(currentUser))
-      } catch (error) {
-        console.error('Não foi possível obter o papel do usuário.', error)
-        setAccessProfile({ role: 'corretor', source: 'default' })
-      } finally {
-        setLoading(false)
-      }
-    })
-  }, [])
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const value = useMemo<AuthContextValue>(() => ({
-    user,
-    role: accessProfile?.role ?? null,
-    accessProfile,
-    loading,
-    isConfigured: isFirebaseConfigured,
-    signInWithGoogle: async () => {
-      if (!auth || !isFirebaseConfigured) {
-        throw new Error('Firebase não configurado. Preencha as variáveis VITE_FIREBASE_* no arquivo .env.')
-      }
-      await signInWithPopup(auth, googleProvider)
+    isAuthenticated,
+    isConfigured: adminPassword.length > 0,
+    login: (password: string) => {
+      const isValid = adminPassword.length > 0 && password === adminPassword
+      setIsAuthenticated(isValid)
+      return isValid
     },
-    signOut: () => auth ? firebaseSignOut(auth) : Promise.resolve(),
-  }), [accessProfile, loading, user])
+    logout: () => setIsAuthenticated(false),
+  }), [isAuthenticated])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
@@ -84,8 +30,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext)
+
   if (!context) {
     throw new Error('useAuth deve ser usado dentro de AuthProvider.')
   }
+
   return context
 }
