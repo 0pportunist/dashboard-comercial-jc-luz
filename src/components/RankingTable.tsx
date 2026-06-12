@@ -1,5 +1,6 @@
 import { ArrowUpRight, Medal } from 'lucide-react'
 import type { RankingEntry } from '../types'
+import { getTeamLogo } from '../utils/getTeamLogo'
 
 interface RankingTableProps {
   title: string
@@ -65,7 +66,22 @@ export function RankingTable({ title, subtitle, data, type }: RankingTableProps)
                     <span className="font-bold text-navy-950">{entry.name}</span>
                   </div>
                 </td>
-                <td className="max-w-[150px] truncate px-3 py-3.5 font-semibold text-slate-600">{entry.team ?? entry.operator}</td>
+                <td className="max-w-[190px] px-3 py-3.5 font-semibold text-slate-600">
+                  {entry.team ? (
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg border border-slate-100 bg-white p-0.5 shadow-sm">
+                        <img
+                          src={getTeamLogo(entry.team)}
+                          alt={`Logo da ${entry.team}`}
+                          className="h-full w-full object-contain"
+                        />
+                      </span>
+                      <span className="truncate">{entry.team}</span>
+                    </div>
+                  ) : (
+                    <span className="truncate">{entry.operator}</span>
+                  )}
+                </td>
                 <td className="px-3 py-3.5 text-center font-black text-navy-950">{entry.sales}</td>
                 <td className="px-3 py-3.5 text-center font-black text-navy-950">{entry.lives?.toLocaleString('pt-BR') ?? '—'}</td>
                 <td className="px-3 py-3.5 font-bold text-slate-700">{currency.format(entry.value)}</td>

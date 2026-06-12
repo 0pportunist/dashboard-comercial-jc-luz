@@ -47,6 +47,7 @@ export type SalesDepartment = 'Vendas G1' | 'Vendas G2' | 'Vendas Externas'
 export interface SalesTeam {
   id: string
   name: string
+  logo?: string
   supervisor: string
   role: string
   department: SalesDepartment
@@ -56,4 +57,13 @@ export interface SalesTeam {
   lives: number
   reportName: string
   dataWarning?: string
+}
+
+export type AuthRole = 'admin' | 'supervisor' | 'corretor'
+
+export interface AccessProfile {
+  role: AuthRole
+  teamId?: string
+  brokerName?: string
+  source: 'claim' | 'email-map' | 'default'
 }
