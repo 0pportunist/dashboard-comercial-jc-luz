@@ -40,6 +40,15 @@ VITE_FIREBASE_APP_ID=
 
 O arquivo `.env` é ignorado pelo Git e não deve ser enviado ao repositório.
 
+### Sem Firebase Analytics
+
+Este projeto utiliza apenas o **Firebase Authentication** para o login com Google. O Analytics não está habilitado:
+
+- não existe variável `VITE_FIREBASE_MEASUREMENT_ID`;
+- o `firebaseConfig` não possui `measurementId`;
+- `getAnalytics` não é importado nem executado;
+- não é necessário ativar Google Analytics ao criar o projeto no Firebase Console.
+
 Documentação oficial:
 
 - [Configurar Firebase para Web](https://firebase.google.com/docs/web/setup)
