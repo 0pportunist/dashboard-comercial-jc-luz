@@ -45,10 +45,10 @@ export function AdministratorFilters({
                 aria-label={`Filtrar campanhas da administradora ${administrator}`}
                 aria-pressed={isSelected}
                 title={administrator}
-                className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border bg-white px-4 transition ${
+                className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border px-4 transition ${
                   isSelected
                     ? 'border-navy-900 bg-navy-900 shadow-md'
-                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50/50'
+                    : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
                 }`}
               >
                 {logo ? (
