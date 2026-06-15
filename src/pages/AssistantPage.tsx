@@ -2,50 +2,61 @@ import { useState, type FormEvent } from 'react'
 import { ArrowLeft, Bot, LogOut, Send, Sparkles, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
+import { Toast } from '../components/Toast'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { useTopOperators } from '../hooks/useTopOperators'
 import { handleAssistantQuery } from '../services/assistant'
+import { sanitizeHtml } from '../utils/sanitize'
 
 interface ChatMessage {
+  id: string
   author: 'user' | 'assistant'
   content: string
 }
 
 const initialMessages: ChatMessage[] = [{
+  id: 'assistant-welcome',
   author: 'assistant',
-  content: 'Olá! Posso ajudar com dúvidas sobre campanhas, metas, prazos e rotas comerciais.',
+  content: sanitizeHtml('Olá! Posso ajudar com dúvidas sobre campanhas, metas, prazos e rotas comerciais.'),
 }]
 
 export function AssistantPage() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
   const [question, setQuestion] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate()
   const { logout } = useAuth()
   const { campaigns, brokerRankings, supervisorRankings, salesTeams } = useDashboardData()
+  const topOperators = useTopOperators([...brokerRankings, ...supervisorRankings])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const content = question.trim()
+    const content = sanitizeHtml(question.trim())
     if (!content) return
 
-    setMessages((current) => [
-      ...current,
-      { author: 'user', content },
-      {
-        author: 'assistant',
-        content: handleAssistantQuery(content, {
-          campaigns,
-          brokerRankings,
-          supervisorRankings,
-          salesTeams,
-        }),
-      },
-    ])
-    setQuestion('')
+    try {
+      const response = handleAssistantQuery(content, {
+        campaigns,
+        brokerRankings,
+        supervisorRankings,
+        salesTeams,
+        topOperators,
+      })
+      setMessages((current) => [
+        ...current,
+        { id: crypto.randomUUID(), author: 'user', content },
+        { id: crypto.randomUUID(), author: 'assistant', content: sanitizeHtml(response) },
+      ])
+      setQuestion('')
+    } catch {
+      setError('O assistente encontrou um erro interno. Tente novamente.')
+    }
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f7fb]">
+      {error && <Toast message={error} onClose={() => setError('')} />}
       <header className="bg-navy-950 text-white">
         <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <BrandLogo color="white" orientation="horizontal" className="w-36 sm:w-44" />
@@ -85,8 +96,8 @@ export function AssistantPage() {
           </div>
 
           <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/60 p-4 sm:p-6">
-            {messages.map((message, index) => (
-              <div key={`${message.author}-${index}`} className={`flex gap-2.5 ${message.author === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {messages.map((message) => (
+              <div key={message.id} className={`flex gap-2.5 ${message.author === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {message.author === 'assistant' && (
                   <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-navy-900 text-white">
                     <Bot className="h-4 w-4" />
@@ -97,6 +108,7 @@ export function AssistantPage() {
                     ? 'rounded-br-md bg-blue-700 text-white'
                     : 'rounded-bl-md border border-slate-100 bg-white text-slate-600 shadow-sm'
                 }`}>
+                  {/* Se HTML for necessário no futuro, use dangerouslySetInnerHTML somente com sanitizeHtml(message.content). */}
                   {message.content}
                 </div>
                 {message.author === 'user' && (
