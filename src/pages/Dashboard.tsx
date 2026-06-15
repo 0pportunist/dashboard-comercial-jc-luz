@@ -27,6 +27,7 @@ import { RealtimeSalesButton } from '../components/RealtimeSalesButton'
 import { TeamsSection } from '../components/TeamsSection'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { operators as operatorCatalog } from '../data/campaigns'
 import { useFilteredCampaigns } from '../hooks/useFilteredCampaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
 
@@ -56,7 +57,7 @@ export function Dashboard() {
   const teamsRef = useRef<HTMLDivElement>(null)
   const campaignsRef = useRef<HTMLElement>(null)
 
-  const visibleOperators = [...new Set(campaigns.flatMap((campaign) => campaign.operators))]
+  const visibleOperators = [...new Set([...operatorCatalog, ...campaigns.flatMap((campaign) => campaign.operators)])]
   const activeCampaigns = campaigns.filter((campaign) => campaign.status === 'Ativa')
   const futureCampaigns = campaigns.filter((campaign) => campaign.status === 'Futura')
   const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')

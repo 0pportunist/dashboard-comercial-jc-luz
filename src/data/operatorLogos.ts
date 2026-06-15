@@ -1,6 +1,7 @@
 import amilLogo from '../assets/operator-logos/amil.png'
 import assimSaudeLogo from '../assets/operator-logos/assim-saude.png'
 import bradescoSaudeLogo from '../assets/operator-logos/bradesco-saude.png'
+import kliniLogo from '../assets/operator-logos/klini.webp'
 import leveSaudeLogo from '../assets/operator-logos/leve-saude.png'
 import medSeniorLogo from '../assets/operator-logos/medsenior.png'
 import portoSaudeLogo from '../assets/operator-logos/porto-saude.png'
@@ -39,5 +40,9 @@ export const operatorLogos: Record<string, OperatorLogo> = {
   'Leve Saúde': {
     src: leveSaudeLogo,
     imageClassName: 'max-h-8 max-w-[86px]',
+  },
+  Klini: {
+    src: kliniLogo,
+    imageClassName: 'max-h-8 max-w-[92px]',
   },
 }
