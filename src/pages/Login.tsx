@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { Eye, EyeOff, LockKeyhole, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { BrandLogo } from '../components/BrandLogo'
 import { useAuth } from '../contexts/AuthContext'
 
 interface LocationState {
@@ -39,14 +40,15 @@ export function Login() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(41,121,255,0.24),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(185,239,47,0.16),transparent_35%)]" />
       <section className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl">
         <div className="bg-navy-900 px-7 py-8 text-white">
-          <div className="flex items-center gap-3">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-limebrand text-navy-950 shadow-glow">
-              <ShieldCheck className="h-7 w-7" />
-            </div>
-            <div>
-              <p className="text-xl font-black tracking-tight">JC LUZ</p>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-limebrand">Dashboard Comercial</p>
-            </div>
+          <div>
+            <BrandLogo
+              color="white"
+              orientation="horizontal"
+              className="w-48"
+            />
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-limebrand">
+              Dashboard Comercial
+            </p>
           </div>
           <h1 className="mt-8 text-3xl font-black tracking-tight">Acesso administrativo</h1>
           <p className="mt-3 text-sm leading-6 text-slate-300">

@@ -1,4 +1,5 @@
-import { CalendarDays, LogOut, ShieldCheck } from 'lucide-react'
+import { CalendarDays, LogOut } from 'lucide-react'
+import { BrandLogo } from './BrandLogo'
 
 interface DashboardHeaderProps {
   onOverviewClick: () => void
@@ -20,18 +21,11 @@ export function DashboardHeader({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(185,239,47,0.16),transparent_32%),radial-gradient(circle_at_20%_100%,rgba(41,121,255,0.22),transparent_38%)]" />
       <div className="relative mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-limebrand text-navy-950 shadow-glow">
-              <ShieldCheck className="h-6 w-6" strokeWidth={2.4} />
-            </div>
-            <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-black tracking-tight">JC LUZ</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-limebrand">Seguros</span>
-              </div>
-              <p className="text-xs text-slate-400">Performance que protege sonhos</p>
-            </div>
-          </div>
+          <BrandLogo
+            color="white"
+            orientation="horizontal"
+            className="w-36 sm:w-44"
+          />
           <div className="hidden items-center gap-7 text-sm font-semibold text-slate-300 md:flex">
             <button onClick={onOverviewClick} className="transition hover:text-white">Visão geral</button>
             <button onClick={onCampaignsClick} className="transition hover:text-white">Campanhas</button>
