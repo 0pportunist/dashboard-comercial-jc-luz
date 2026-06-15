@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from 're
 
 interface AuthContextValue {
   isAuthenticated: boolean
+  role: 'admin'
   isConfigured: boolean
   login: (password: string) => boolean
   logout: () => void
@@ -15,6 +16,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => ({
     isAuthenticated,
+    role: 'admin',
     isConfigured: adminPassword.length > 0,
     login: (password: string) => {
       const isValid = adminPassword.length > 0 && password === adminPassword

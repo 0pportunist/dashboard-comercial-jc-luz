@@ -10,6 +10,7 @@ Dashboard web para acompanhamento de campanhas, rankings de produção e equipes
 - Tailwind CSS
 - React Router
 - Lucide React
+- PDF.js
 
 ## Configurar o acesso
 
@@ -54,9 +55,13 @@ O computador que executa o dashboard deve permanecer ligado e com o servidor Vit
 ## Estrutura principal
 
 - `src/contexts/AuthContext.tsx`: autenticação em memória e comparação da senha.
+- `src/contexts/DataContext.tsx`: campanhas e relatórios editáveis salvos no navegador.
 - `src/components/auth/PrivateRoute.tsx`: proteção da rota administrativa.
+- `src/components/auth/AdminRoute.tsx`: restringe a administração ao papel `admin`.
 - `src/pages/Login.tsx`: formulário de senha.
 - `src/pages/Dashboard.tsx`: dashboard protegido.
+- `src/pages/Admin.tsx`: importa relatórios e cadastra campanhas.
+- `src/utils/reportParser.ts`: extrai dados dos PDFs SixVox.
 - `src/data/campaigns.ts`: campanhas, regras, metas e progresso.
 - `src/data/rankings.ts`: rankings e resumo do relatório de produção.
 - `src/data/teams.ts`: departamentos, equipes e supervisores.
@@ -74,6 +79,15 @@ São aceitos arquivos `.png`, `.jpg`, `.jpeg` e `.svg`. Quando nenhuma imagem co
 ## Dados
 
 Os rankings usam relatórios SixVox referentes ao período de 1 a 30 de maio de 2026. Dados ausentes nos relatórios não devem ser inferidos.
+
+### Administração
+
+Após entrar, clique em **Administração** no cabeçalho.
+
+- **Adicionar relatório:** envie um PDF SixVox de produção de corretores ou supervisores. O sistema identifica o tipo, extrai período, emissão, totais e ranking e apresenta uma prévia antes da confirmação.
+- **Nova campanha:** informe período, operadoras, prêmio, público, regras, meta e imagem. A campanha passa a integrar indicadores, filtros e cards imediatamente.
+
+Nesta versão, alterações administrativas são persistidas em `localStorage`, apenas no navegador em que foram cadastradas. Para compartilhar atualizações automaticamente entre vários computadores, conecte o `DataContext` a uma API e banco de dados.
 
 ## Integração futura
 

@@ -1,4 +1,4 @@
-import { CalendarDays, LogOut } from 'lucide-react'
+import { CalendarDays, LogOut, Settings } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 
 interface DashboardHeaderProps {
@@ -6,7 +6,10 @@ interface DashboardHeaderProps {
   onCampaignsClick: () => void
   onRankingsClick: () => void
   onTeamsClick: () => void
+  onAdminClick: () => void
   onSignOut: () => void
+  reportPeriod: string
+  reportIssuedAt: string
 }
 
 export function DashboardHeader({
@@ -14,7 +17,10 @@ export function DashboardHeader({
   onCampaignsClick,
   onRankingsClick,
   onTeamsClick,
+  onAdminClick,
   onSignOut,
+  reportPeriod,
+  reportIssuedAt,
 }: DashboardHeaderProps) {
   return (
     <header className="relative overflow-hidden bg-navy-950 text-white">
@@ -33,6 +39,13 @@ export function DashboardHeader({
             <button onClick={onTeamsClick} className="transition hover:text-white">Equipes</button>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={onAdminClick}
+              className="flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              <Settings className="h-4 w-4" />
+              <span className="hidden lg:inline">Administração</span>
+            </button>
             <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1.5 text-xs font-semibold text-slate-200">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-goldbrand font-black text-navy-950">AD</span>
               <span className="hidden max-w-32 truncate sm:block">
@@ -70,7 +83,7 @@ export function DashboardHeader({
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Último relatório disponível</p>
-              <p className="mt-0.5 text-sm font-bold">Maio/2026 • emitido em 08 jun</p>
+              <p className="mt-0.5 max-w-72 text-sm font-bold">{reportPeriod} • emitido em {reportIssuedAt}</p>
             </div>
           </div>
         </div>

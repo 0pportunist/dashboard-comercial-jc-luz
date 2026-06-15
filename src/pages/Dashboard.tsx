@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Activity,
   ArrowRight,
@@ -25,10 +26,8 @@ import { RankingTable } from '../components/RankingTable'
 import { RealtimeSalesButton } from '../components/RealtimeSalesButton'
 import { TeamsSection } from '../components/TeamsSection'
 import { useAuth } from '../contexts/AuthContext'
-import { campaigns } from '../data/campaigns'
-import { brokerRankings, productionReport, supervisorRankings } from '../data/rankings'
-import { salesTeams } from '../data/teams'
-import type { Audience, Campaign, CampaignStatus, PrizeType } from '../types'
+import { useDashboardData } from '../contexts/DataContext'
+import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
 
 const statusOptions: Array<CampaignStatus | 'Todos'> = ['Todos', 'Ativa', 'Futura', 'Encerrada']
 const prizeOptions: Array<PrizeType | 'Todos'> = ['Todos', 'Viagem', 'Experiência', 'Produto', 'Dinheiro']
@@ -42,6 +41,8 @@ const currency = new Intl.NumberFormat('pt-BR', {
 
 export function Dashboard() {
   const { logout } = useAuth()
+  const { campaigns, brokerRankings, productionReport, salesTeams, supervisorRankings } = useDashboardData()
+  const navigate = useNavigate()
   const [selectedOperator, setSelectedOperator] = useState('Todas')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Todos')
@@ -70,13 +71,13 @@ export function Dashboard() {
       const matchesAudience = audience === 'Todos' || campaign.audience === audience || campaign.audience === 'Todos'
       return matchesQuery && matchesOperator && matchesStatus && matchesPrize && matchesAudience
     })
-  }, [audience, prizeType, query, selectedOperator, status])
+  }, [audience, campaigns, prizeType, query, selectedOperator, status])
 
   useEffect(() => {
     if (!selectedCampaign || !campaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
       setSelectedCampaign(campaigns[0] ?? null)
     }
-  }, [selectedCampaign])
+  }, [campaigns, selectedCampaign])
 
   const scrollTo = (ref: RefObject<HTMLElement | HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -97,7 +98,10 @@ export function Dashboard() {
         onCampaignsClick={() => scrollTo(campaignsRef)}
         onRankingsClick={() => scrollTo(rankingsRef)}
         onTeamsClick={() => scrollTo(teamsRef)}
+        onAdminClick={() => navigate('/admin')}
         onSignOut={logout}
+        reportPeriod={productionReport.period}
+        reportIssuedAt={productionReport.issuedAt}
       />
 
       <main className="mx-auto max-w-[1440px] px-4 pb-14 sm:px-6 lg:px-8">
@@ -120,7 +124,7 @@ export function Dashboard() {
         </section>
 
         <section ref={rankingsRef} className="mt-7 scroll-mt-5">
-          <ProductionReport />
+          <ProductionReport report={productionReport} />
 
           <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -137,13 +141,13 @@ export function Dashboard() {
 
           <div className="grid gap-5 xl:grid-cols-2">
             <RankingTable
-              title="Corretores - Maio"
+              title="Corretores - Período atual"
               subtitle="Base CLT e Salão"
               data={brokerRankings}
               type="broker"
             />
             <RankingTable
-              title="Supervisores - Maio"
+              title="Supervisores - Período atual"
               subtitle="Base consolidada de todas as equipes"
               data={supervisorRankings}
               type="supervisor"
@@ -212,21 +216,21 @@ export function Dashboard() {
   )
 }
 
-function ProductionReport() {
+function ProductionReport({ report }: { report: ProductionReportType }) {
   return (
     <div className="mb-7 overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-card">
       <div className="flex flex-col justify-between gap-2 bg-blue-50/70 px-5 py-4 sm:flex-row sm:items-center">
         <div>
           <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-blue-700">Fechamento mais recente</p>
-          <h2 className="mt-1 font-black text-navy-950">Produção de {productionReport.period}</h2>
+          <h2 className="mt-1 font-black text-navy-950">Produção de {report.period}</h2>
         </div>
-        <p className="text-xs font-semibold text-slate-500">Relatórios SixVox emitidos em {productionReport.issuedAt}</p>
+        <p className="text-xs font-semibold text-slate-500">Relatórios SixVox emitidos em {report.issuedAt}</p>
       </div>
       <div className="grid gap-px bg-slate-100 sm:grid-cols-2 lg:grid-cols-4">
-        <ReportMetric icon={ReceiptText} label="Mensalidade • CLT e Salão" value={currency.format(productionReport.brokerBase.value)} />
-        <ReportMetric icon={UserRoundCheck} label="Contratos • CLT e Salão" value={productionReport.brokerBase.contracts.toLocaleString('pt-BR')} />
-        <ReportMetric icon={ReceiptText} label="Mensalidade • Equipes" value={currency.format(productionReport.supervisorBase.value)} />
-        <ReportMetric icon={UsersRound} label="Vidas • Equipes" value={productionReport.supervisorBase.lives.toLocaleString('pt-BR')} />
+        <ReportMetric icon={ReceiptText} label="Mensalidade • CLT e Salão" value={currency.format(report.brokerBase.value)} />
+        <ReportMetric icon={UserRoundCheck} label="Contratos • CLT e Salão" value={report.brokerBase.contracts.toLocaleString('pt-BR')} />
+        <ReportMetric icon={ReceiptText} label="Mensalidade • Equipes" value={currency.format(report.supervisorBase.value)} />
+        <ReportMetric icon={UsersRound} label="Vidas • Equipes" value={report.supervisorBase.lives.toLocaleString('pt-BR')} />
       </div>
     </div>
   )
