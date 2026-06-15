@@ -61,6 +61,16 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
           ))}
           {campaign.operators.length > 2 && <span className="rounded-md bg-slate-100 px-2 py-1 text-[9px] font-bold text-slate-500">+{campaign.operators.length - 2}</span>}
         </div>
+        {campaign.administrators && campaign.administrators.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-amber-700">Administradora</span>
+            {campaign.administrators.map((administrator) => (
+              <span key={administrator} className="rounded-md bg-amber-50 px-2 py-1 text-[9px] font-bold text-amber-800">
+                {administrator}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="mt-4">
           <div className="mb-1.5 flex justify-between text-[10px] font-bold">
             <span className="text-slate-500">Progresso principal</span>

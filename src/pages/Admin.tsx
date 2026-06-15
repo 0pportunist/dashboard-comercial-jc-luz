@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { administrators } from '../data/administrators'
 import { operators } from '../data/campaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, UnitType } from '../types'
 import type { ParsedReport } from '../utils/reportParser'
@@ -312,7 +313,14 @@ function CampaignManager() {
                 }`}>{campaign.status}</span>
               </div>
               <p className="mt-1 text-xs font-semibold text-slate-500">{campaign.period}</p>
-              <p className="mt-2 truncate text-xs text-slate-400">{campaign.operators.join(' • ')}</p>
+              <p className="mt-2 truncate text-xs text-slate-400">
+                Operadoras: {campaign.operators.join(' • ')}
+              </p>
+              {campaign.administrators && campaign.administrators.length > 0 && (
+                <p className="mt-1 truncate text-xs font-semibold text-amber-700">
+                  Administradoras: {campaign.administrators.join(' • ')}
+                </p>
+              )}
             </div>
             <button
               onClick={() => setEditing(campaign)}
@@ -341,6 +349,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
   const navigate = useNavigate()
   const [success, setSuccess] = useState('')
   const [selectedOperators, setSelectedOperators] = useState<string[]>(campaign?.operators ?? [])
+  const [selectedAdministrators, setSelectedAdministrators] = useState<string[]>(campaign?.administrators ?? [])
   const [image, setImage] = useState(campaign?.image ?? '')
   const isEditing = Boolean(campaign)
 
@@ -366,6 +375,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
       period: `${new Date(`${startDate}T12:00:00`).toLocaleDateString('pt-BR')} — ${new Date(`${endDate}T12:00:00`).toLocaleDateString('pt-BR')}`,
       endDate,
       operators: selectedOperators,
+      administrators: selectedAdministrators,
       prizeType: String(form.get('prizeType')) as PrizeType,
       audience: String(form.get('audience')) as Audience,
       mainPrize: String(form.get('mainPrize')),
@@ -391,6 +401,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
       setSuccess(`Campanha “${name}” adicionada com sucesso.`)
       event.currentTarget.reset()
       setSelectedOperators([])
+      setSelectedAdministrators([])
       setImage('')
     }
   }
@@ -431,6 +442,31 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
                   current.includes(operator) ? current.filter((item) => item !== operator) : [...current, operator])}
               />
               {operator}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset className="mt-5 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+        <legend className="px-2 text-xs font-extrabold uppercase tracking-wider text-amber-800">Administradoras</legend>
+        <p className="mb-3 text-xs text-amber-800/70">Selecione apenas quando a campanha for comercializada por uma administradora.</p>
+        <div className="flex flex-wrap gap-2">
+          {administrators.map((administrator) => (
+            <label key={administrator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition ${
+              selectedAdministrators.includes(administrator)
+                ? 'border-amber-600 bg-amber-100 text-amber-900'
+                : 'border-amber-200 bg-white text-amber-800'
+            }`}>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={selectedAdministrators.includes(administrator)}
+                onChange={() => setSelectedAdministrators((current) =>
+                  current.includes(administrator)
+                    ? current.filter((item) => item !== administrator)
+                    : [...current, administrator])}
+              />
+              {administrator}
             </label>
           ))}
         </div>

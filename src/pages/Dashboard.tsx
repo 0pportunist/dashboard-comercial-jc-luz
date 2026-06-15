@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { CampaignCard } from '../components/CampaignCard'
 import { CampaignDetails } from '../components/CampaignDetails'
+import { AdministratorFilters } from '../components/AdministratorFilters'
 import { DashboardHeader } from '../components/DashboardHeader'
 import { MetricCard } from '../components/MetricCard'
 import { OperatorFilters } from '../components/OperatorFilters'
@@ -27,6 +28,7 @@ import { RealtimeSalesButton } from '../components/RealtimeSalesButton'
 import { TeamsSection } from '../components/TeamsSection'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { administrators } from '../data/administrators'
 import { operators as operatorCatalog } from '../data/campaigns'
 import { useFilteredCampaigns } from '../hooks/useFilteredCampaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
@@ -46,6 +48,7 @@ export function Dashboard() {
   const { campaigns, brokerRankings, productionReport, salesTeams, supervisorRankings } = useDashboardData()
   const navigate = useNavigate()
   const [selectedOperator, setSelectedOperator] = useState('Todas')
+  const [selectedAdministrator, setSelectedAdministrator] = useState('Todas')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Todos')
   const [prizeType, setPrizeType] = useState<PrizeType | 'Todos'>('Todos')
@@ -66,16 +69,17 @@ export function Dashboard() {
   const filteredCampaigns = useFilteredCampaigns(campaigns, {
     query,
     operator: selectedOperator,
+    administrator: selectedAdministrator,
     status,
     prizeType,
     audience,
   })
 
   useEffect(() => {
-    if (!selectedCampaign || !campaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
-      setSelectedCampaign(campaigns[0] ?? null)
+    if (!selectedCampaign || !filteredCampaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
+      setSelectedCampaign(filteredCampaigns[0] ?? null)
     }
-  }, [campaigns, selectedCampaign])
+  }, [filteredCampaigns, selectedCampaign])
 
   const scrollTo = (ref: RefObject<HTMLElement | HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -83,6 +87,7 @@ export function Dashboard() {
 
   const clearFilters = () => {
     setSelectedOperator('Todas')
+    setSelectedAdministrator('Todas')
     setQuery('')
     setStatus('Todos')
     setPrizeType('Todos')
@@ -121,6 +126,13 @@ export function Dashboard() {
           </div>
           <RealtimeSalesButton onClick={() => setRealtimeModal(true)} />
         </section>
+        <div className="mt-3">
+          <AdministratorFilters
+            administrators={administrators}
+            selected={selectedAdministrator}
+            onChange={setSelectedAdministrator}
+          />
+        </div>
 
         <section ref={rankingsRef} className="mt-7 scroll-mt-5">
           <ProductionReport report={productionReport} />
