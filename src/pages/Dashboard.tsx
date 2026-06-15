@@ -120,19 +120,19 @@ export function Dashboard() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-3 lg:flex-row">
-          <div className="min-w-0 flex-1">
-            <OperatorFilters operators={visibleOperators} selected={selectedOperator} onChange={setSelectedOperator} />
-          </div>
-          <RealtimeSalesButton onClick={() => setRealtimeModal(true)} />
-        </section>
-        <div className="mt-3">
+        <div>
           <AdministratorFilters
             administrators={administrators}
             selected={selectedAdministrator}
             onChange={setSelectedAdministrator}
           />
         </div>
+        <section className="mt-3 flex flex-col gap-3 lg:flex-row">
+          <div className="min-w-0 flex-1">
+            <OperatorFilters operators={visibleOperators} selected={selectedOperator} onChange={setSelectedOperator} />
+          </div>
+          <RealtimeSalesButton onClick={() => setRealtimeModal(true)} />
+        </section>
 
         <section ref={rankingsRef} className="mt-7 scroll-mt-5">
           <ProductionReport report={productionReport} />
