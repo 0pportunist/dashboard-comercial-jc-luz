@@ -8,3 +8,4 @@ dist
 .env
 .env.*
 !.env.example
+ACESSO-REDE-LOCAL.txt
