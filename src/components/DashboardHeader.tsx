@@ -1,4 +1,4 @@
-import { CalendarDays, LogOut, Settings } from 'lucide-react'
+import { Bot, CalendarDays, LogOut, Settings } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 
 interface DashboardHeaderProps {
@@ -42,6 +42,13 @@ export function DashboardHeader({
             <button onClick={onAssistantClick} className="transition hover:text-white">Assistente de IA</button>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={onAssistantClick}
+              className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white md:hidden"
+              aria-label="Abrir Assistente de IA"
+            >
+              <Bot className="h-4 w-4" />
+            </button>
             <button
               onClick={onAdminClick}
               className="flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"

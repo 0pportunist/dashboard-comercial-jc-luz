@@ -61,6 +61,8 @@ O computador que executa o dashboard deve permanecer ligado e com o servidor Vit
 - `src/pages/Login.tsx`: formulário de senha.
 - `src/pages/Dashboard.tsx`: dashboard protegido.
 - `src/pages/Admin.tsx`: importa relatórios e cadastra campanhas.
+- `src/pages/AssistantPage.tsx`: interface de chat do assistente comercial.
+- `src/services/assistant.ts`: regras e análise dos dados internos do assistente.
 - `src/utils/reportParser.ts`: extrai dados dos PDFs SixVox.
 - `src/data/campaigns.ts`: campanhas, regras, metas e progresso.
 - `src/data/rankings.ts`: rankings e resumo do relatório de produção.
@@ -89,6 +91,19 @@ Após entrar, clique em **Administração** no cabeçalho.
 - **Gerenciar campanhas:** busque campanhas existentes, filtre por status e atualize período, prêmio, público, operadoras, regras, metas, progresso e imagem.
 
 Nesta versão, alterações administrativas são persistidas em `localStorage`, apenas no navegador em que foram cadastradas. Para compartilhar atualizações automaticamente entre vários computadores, conecte o `DataContext` a uma API e banco de dados.
+
+### Assistente de IA
+
+A aba **Assistente de IA** oferece um chat baseado em regras e nos dados internos do dashboard. Ele responde perguntas sobre:
+
+- campanhas ativas, prazos, prêmios, regras, metas e progresso;
+- rankings de corretores e supervisores;
+- produção e responsáveis das equipes;
+- sugestões de rota comercial por operadora.
+
+Exemplos: `Quais campanhas estão ativas?`, `Quanto falta para a meta do Cruzeiro Internacional?`, `Quem lidera o ranking?` e `Qual a rota de vendas?`.
+
+O assistente não consulta a internet nem serviços externos. Quando os rankings não informam a operadora de cada venda, ele sinaliza a limitação e sugere uma rota alternativa baseada nas campanhas ativas, sem inventar dados. Perguntas fora desse escopo recebem uma resposta padrão.
 
 ## Integração futura
 

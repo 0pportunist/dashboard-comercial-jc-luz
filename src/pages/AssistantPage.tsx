@@ -68,7 +68,7 @@ export function AssistantPage() {
           <div>
             <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-blue-700">Dados internos JC Luz</p>
             <h1 className="mt-1 text-3xl font-black text-navy-950">Assistente de IA</h1>
-            <p className="mt-1 text-sm text-slate-500">Consulte campanhas, metas, prazos e rotas de atuação comercial.</p>
+            <p className="mt-1 text-sm text-slate-500">Assistente baseado em regras para campanhas, metas, rankings, equipes e rotas comerciais.</p>
           </div>
         </div>
 
@@ -109,6 +109,18 @@ export function AssistantPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="border-t border-slate-100 bg-white p-3 sm:p-4">
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {['Quais campanhas estão ativas?', 'Qual campanha termina primeiro?', 'Qual a rota de vendas?', 'Quem lidera o ranking?'].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => setQuestion(suggestion)}
+                  className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-500 transition hover:border-blue-300 hover:text-blue-700"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
             <div className="flex items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10">
               <textarea
                 value={question}
