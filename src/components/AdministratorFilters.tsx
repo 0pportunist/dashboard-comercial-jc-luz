@@ -47,7 +47,7 @@ export function AdministratorFilters({
                 title={administrator}
                 className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border bg-white px-4 transition ${
                   isSelected
-                    ? 'border-blue-500 bg-blue-50/60 shadow-sm ring-2 ring-blue-500/15'
+                    ? 'border-navy-900 bg-navy-900 shadow-md'
                     : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50/50'
                 }`}
               >
@@ -55,10 +55,12 @@ export function AdministratorFilters({
                   <img
                     src={logo.src}
                     alt=""
-                    className={`h-auto w-auto object-contain ${logo.imageClassName ?? 'max-h-8 max-w-[116px]'}`}
+                    className={`h-auto w-auto object-contain transition ${logo.imageClassName ?? 'max-h-8 max-w-[116px]'} ${
+                      isSelected ? 'brightness-0 invert' : ''
+                    }`}
                   />
                 ) : (
-                  <span className="text-xs font-bold text-navy-900">{administrator}</span>
+                  <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-navy-900'}`}>{administrator}</span>
                 )}
               </button>
             )

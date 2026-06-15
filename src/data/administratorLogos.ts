@@ -1,6 +1,6 @@
 import allcareLogo from '../assets/administrator-logos/allcare.svg'
 import qualicorpLogo from '../assets/administrator-logos/qualicorp.png'
-import supermedLogo from '../assets/administrator-logos/supermed.webp'
+import supermedLogo from '../assets/administrator-logos/supermed.png'
 
 interface AdministratorLogo {
   src: string
