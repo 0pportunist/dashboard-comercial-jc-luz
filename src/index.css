@@ -63,30 +63,6 @@ button {
   scrollbar-width: none;
 }
 
-.operator-scrollbar {
-  scrollbar-color: #94a3b8 #f1f5f9;
-  scrollbar-width: thin;
-}
-
-.operator-scrollbar::-webkit-scrollbar {
-  height: 6px;
-}
-
-.operator-scrollbar::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: #f1f5f9;
-}
-
-.operator-scrollbar::-webkit-scrollbar-thumb {
-  min-width: 48px;
-  border-radius: 999px;
-  background: #94a3b8;
-}
-
-.operator-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
-}
-
 .line-clamp-1 {
   display: -webkit-box;
   overflow: hidden;

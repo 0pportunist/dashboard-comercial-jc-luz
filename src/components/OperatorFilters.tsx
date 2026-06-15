@@ -22,7 +22,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
     <div className="flex items-center gap-2 rounded-2xl border border-slate-100 bg-white p-2 shadow-card">
       <div
         ref={scrollContainerRef}
-        className="operator-scrollbar min-w-0 flex-1 snap-x snap-proximity overflow-x-auto"
+        className="scrollbar-hide min-w-0 flex-1 snap-x snap-proximity overflow-x-auto"
       >
         <div className="flex w-max items-center gap-2 p-1 pb-2">
           <div className="mr-1 hidden shrink-0 items-center gap-2 px-2 text-xs font-extrabold uppercase tracking-wider text-slate-400 lg:flex">
