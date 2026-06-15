@@ -2,7 +2,7 @@ import { campaigns as defaultCampaigns } from '../data/campaigns'
 import { brokerRankings as defaultBrokerRankings, supervisorRankings as defaultSupervisorRankings } from '../data/rankings'
 import { salesTeams as defaultSalesTeams } from '../data/teams'
 import type { Campaign, RankingEntry, SalesTeam } from '../types'
-import type { OperatorSales } from '../hooks/useTopOperators'
+import { calculateTopOperators, type OperatorSales } from '../hooks/useTopOperators'
 
 export interface AssistantData {
   campaigns: Campaign[]
@@ -90,7 +90,9 @@ export function getCampaignInfo(question: string, data: AssistantData = defaultD
 }
 
 export function getRouteSuggestions(data: AssistantData = defaultData) {
-  const rankedOperators = data.topOperators?.map(({ operator, sales }) => [operator, sales] as const) ?? []
+  const topOperators = data.topOperators
+    ?? calculateTopOperators([...data.brokerRankings, ...data.supervisorRankings])
+  const rankedOperators = topOperators.map(({ operator, sales }) => [operator, sales] as const)
 
   if (rankedOperators.length > 0) {
     const route = rankedOperators.slice(0, 5)
