@@ -42,11 +42,29 @@ export interface RankingEntry {
   productionShare?: number
 }
 
+export interface ProductionReport {
+  period: string
+  issuedAt: string
+  brokerBase: {
+    label: string
+    value: number
+    contracts: number
+    lives: number
+  }
+  supervisorBase: {
+    label: string
+    value: number
+    contracts: number
+    lives: number
+  }
+}
+
 export type SalesDepartment = 'Vendas G1' | 'Vendas G2' | 'Vendas Externas'
 
 export interface SalesTeam {
   id: string
   name: string
+  logo?: string
   supervisor: string
   role: string
   department: SalesDepartment

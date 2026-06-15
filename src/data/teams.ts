@@ -1,6 +1,7 @@
 import type { SalesTeam } from '../types'
+import { getTeamLogo } from '../utils/getTeamLogo'
 
-export const salesTeams: SalesTeam[] = [
+const teamDefinitions: SalesTeam[] = [
   {
     id: 'equipe-titas',
     name: 'Equipe Titãs',
@@ -147,19 +148,6 @@ export const salesTeams: SalesTeam[] = [
     reportName: 'HELIS VELLASCO',
   },
   {
-    id: 'equipe-fenix',
-    name: 'Equipe Fênix',
-    supervisor: 'Nizia Lima',
-    role: 'Supervisora',
-    department: 'Vendas G2',
-    collaborators: 1,
-    value: 2875.92,
-    contracts: 7,
-    lives: 10,
-    reportName: 'NIZIA LIMA',
-    dataWarning: 'Total consolidado dos dois registros de Nizia Lima presentes no relatório.',
-  },
-  {
     id: 'equipe-perfil',
     name: 'Equipe Perfil',
     supervisor: 'Rafael Azeredo',
@@ -184,3 +172,8 @@ export const salesTeams: SalesTeam[] = [
     reportName: 'ALTAIR DE OLIVEIRA DA SILVA',
   },
 ]
+
+export const salesTeams: SalesTeam[] = teamDefinitions.map((team) => ({
+  ...team,
+  logo: getTeamLogo(team.name),
+}))
