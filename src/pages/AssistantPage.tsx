@@ -3,6 +3,8 @@ import { ArrowLeft, Bot, LogOut, Send, Sparkles, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
 import { useAuth } from '../contexts/AuthContext'
+import { useDashboardData } from '../contexts/DataContext'
+import { handleAssistantQuery } from '../services/assistant'
 
 interface ChatMessage {
   author: 'user' | 'assistant'
@@ -19,6 +21,7 @@ export function AssistantPage() {
   const [question, setQuestion] = useState('')
   const navigate = useNavigate()
   const { logout } = useAuth()
+  const { campaigns, brokerRankings, supervisorRankings, salesTeams } = useDashboardData()
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -30,7 +33,12 @@ export function AssistantPage() {
       { author: 'user', content },
       {
         author: 'assistant',
-        content: 'Estou preparando a análise dos dados comerciais para responder essa pergunta.',
+        content: handleAssistantQuery(content, {
+          campaigns,
+          brokerRankings,
+          supervisorRankings,
+          salesTeams,
+        }),
       },
     ])
     setQuestion('')
