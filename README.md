@@ -29,6 +29,13 @@ O estado de autenticação fica somente na memória do React. Ele não usa `loca
 
 > Este mecanismo serve como controle simples para a primeira versão em ambiente interno. Variáveis `VITE_*` são incluídas no JavaScript entregue ao navegador e não protegem uma aplicação publicada na internet. Para produção pública, use autenticação e validação no servidor.
 
+### Segurança
+
+- Nunca versione o arquivo `.env` nem compartilhe a senha administrativa em commits, mensagens ou capturas de tela.
+- A senha atual é adequada somente para ambiente local ou rede interna controlada. Em produção, migre para autenticação no servidor com hash de senha, tokens de sessão e controle de papéis.
+- O chat sanitiza entradas e respostas com DOMPurify. Caso HTML seja renderizado no futuro, use apenas conteúdo retornado por `sanitizeHtml` antes de chamar `dangerouslySetInnerHTML`.
+- Execute `npm audit` regularmente e mantenha Vite e suas dependências atualizados.
+
 ## Executar
 
 ```bash

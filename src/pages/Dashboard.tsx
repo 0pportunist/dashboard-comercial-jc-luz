@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Activity,
@@ -27,6 +27,7 @@ import { RealtimeSalesButton } from '../components/RealtimeSalesButton'
 import { TeamsSection } from '../components/TeamsSection'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { useFilteredCampaigns } from '../hooks/useFilteredCampaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
 
 const statusOptions: Array<CampaignStatus | 'Todos'> = ['Todos', 'Ativa', 'Futura', 'Encerrada']
@@ -61,17 +62,13 @@ export function Dashboard() {
   const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')
   const closestEnding = [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0]
 
-  const filteredCampaigns = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
-    return campaigns.filter((campaign) => {
-      const matchesQuery = !normalizedQuery || campaign.name.toLocaleLowerCase('pt-BR').includes(normalizedQuery)
-      const matchesOperator = selectedOperator === 'Todas' || campaign.operators.includes(selectedOperator)
-      const matchesStatus = status === 'Todos' || campaign.status === status
-      const matchesPrize = prizeType === 'Todos' || campaign.prizeType === prizeType
-      const matchesAudience = audience === 'Todos' || campaign.audience === audience || campaign.audience === 'Todos'
-      return matchesQuery && matchesOperator && matchesStatus && matchesPrize && matchesAudience
-    })
-  }, [audience, campaigns, prizeType, query, selectedOperator, status])
+  const filteredCampaigns = useFilteredCampaigns(campaigns, {
+    query,
+    operator: selectedOperator,
+    status,
+    prizeType,
+    audience,
+  })
 
   useEffect(() => {
     if (!selectedCampaign || !campaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
