@@ -4,9 +4,12 @@ import {
   CalendarPlus,
   CheckCircle2,
   FileUp,
+  ListChecks,
   LoaderCircle,
   LogOut,
+  Pencil,
   Save,
+  Search,
   UploadCloud,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -17,7 +20,7 @@ import { operators } from '../data/campaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, UnitType } from '../types'
 import type { ParsedReport } from '../utils/reportParser'
 
-type AdminTab = 'reports' | 'campaigns'
+type AdminTab = 'reports' | 'campaigns' | 'manage'
 
 const accentOptions = [
   'from-blue-500 to-indigo-700',
@@ -30,6 +33,30 @@ const accentOptions = [
 const slugify = (value: string) =>
   value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+const monthNumbers: Record<string, string> = {
+  jan: '01',
+  fev: '02',
+  mar: '03',
+  abr: '04',
+  mai: '05',
+  jun: '06',
+  jul: '07',
+  ago: '08',
+  set: '09',
+  out: '10',
+  nov: '11',
+  dez: '12',
+}
+
+function dateFromPeriod(period: string, position: 'start' | 'end') {
+  const part = period.split('—')[position === 'start' ? 0 : 1]?.trim() ?? ''
+  const numeric = part.match(/(\d{2})\/(\d{2})\/(\d{4})/)
+  if (numeric) return `${numeric[3]}-${numeric[2]}-${numeric[1]}`
+  const textual = part.match(/(\d{1,2})\s+([a-zç]{3})\s+(\d{4})/i)
+  if (textual) return `${textual[3]}-${monthNumbers[textual[2].toLowerCase()]}-${textual[1].padStart(2, '0')}`
+  return position === 'end' ? '' : new Date().toISOString().slice(0, 10)
+}
 
 export function Admin() {
   const [tab, setTab] = useState<AdminTab>('reports')
@@ -59,13 +86,16 @@ export function Admin() {
           <p className="mt-2 text-sm text-slate-500">Importe fechamentos comerciais ou publique novas campanhas.</p>
         </div>
 
-        <div className="mt-6 flex gap-2 rounded-2xl border border-slate-100 bg-white p-2 shadow-card">
+        <div className="mt-6 flex flex-col gap-2 rounded-2xl border border-slate-100 bg-white p-2 shadow-card sm:flex-row">
           <TabButton active={tab === 'reports'} onClick={() => setTab('reports')} icon={FileUp} label="Adicionar relatório" />
           <TabButton active={tab === 'campaigns'} onClick={() => setTab('campaigns')} icon={CalendarPlus} label="Nova campanha" />
+          <TabButton active={tab === 'manage'} onClick={() => setTab('manage')} icon={ListChecks} label="Gerenciar campanhas" />
         </div>
 
         <div className="mt-6">
-          {tab === 'reports' ? <ReportImporter /> : <CampaignForm />}
+          {tab === 'reports' && <ReportImporter />}
+          {tab === 'campaigns' && <CampaignForm />}
+          {tab === 'manage' && <CampaignManager />}
         </div>
       </main>
     </div>
@@ -217,12 +247,102 @@ function NumberField({ label, value, step = '1', onChange }: {
   )
 }
 
-function CampaignForm() {
-  const { addCampaign } = useDashboardData()
+function CampaignManager() {
+  const { campaigns } = useDashboardData()
+  const [query, setQuery] = useState('')
+  const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Ativa')
+  const [editing, setEditing] = useState<Campaign | null>(null)
+  const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
+  const filtered = campaigns.filter((campaign) => (
+    (!normalizedQuery || campaign.name.toLocaleLowerCase('pt-BR').includes(normalizedQuery))
+    && (status === 'Todos' || campaign.status === status)
+  ))
+
+  if (editing) {
+    return (
+      <CampaignForm
+        key={editing.id}
+        campaign={editing}
+        onCancel={() => setEditing(null)}
+        onSaved={() => setEditing(null)}
+      />
+    )
+  }
+
+  return (
+    <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-card">
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+        <div>
+          <h2 className="text-xl font-black text-navy-950">Gerenciar campanhas vigentes</h2>
+          <p className="mt-1 text-sm text-slate-500">Atualize período, status, metas, regras, prêmio ou imagem.</p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <label className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar campanha..."
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-blue-500 sm:w-64"
+            />
+          </label>
+          <select
+            value={status}
+            onChange={(event) => setStatus(event.target.value as CampaignStatus | 'Todos')}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-600 outline-none focus:border-blue-500"
+          >
+            {['Ativa', 'Futura', 'Encerrada', 'Todos'].map((option) => <option key={option}>{option}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-3">
+        {filtered.map((campaign) => (
+          <article key={campaign.id} className="flex flex-col gap-4 rounded-2xl border border-slate-100 p-4 transition hover:border-blue-200 sm:flex-row sm:items-center">
+            <img src={campaign.image} alt="" className="h-20 w-full rounded-xl object-cover sm:w-28" />
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="truncate font-black text-navy-950">{campaign.name}</h3>
+                <span className={`rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase ${
+                  campaign.status === 'Ativa'
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : campaign.status === 'Futura'
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'bg-slate-100 text-slate-500'
+                }`}>{campaign.status}</span>
+              </div>
+              <p className="mt-1 text-xs font-semibold text-slate-500">{campaign.period}</p>
+              <p className="mt-2 truncate text-xs text-slate-400">{campaign.operators.join(' • ')}</p>
+            </div>
+            <button
+              onClick={() => setEditing(campaign)}
+              className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-xs font-black text-white hover:bg-navy-800"
+            >
+              <Pencil className="h-4 w-4" /> Editar campanha
+            </button>
+          </article>
+        ))}
+        {filtered.length === 0 && (
+          <div className="grid min-h-48 place-items-center rounded-2xl bg-slate-50 text-center">
+            <p className="text-sm font-bold text-slate-500">Nenhuma campanha encontrada.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function CampaignForm({ campaign, onCancel, onSaved }: {
+  campaign?: Campaign
+  onCancel?: () => void
+  onSaved?: () => void
+}) {
+  const { addCampaign, updateCampaign } = useDashboardData()
   const navigate = useNavigate()
   const [success, setSuccess] = useState('')
-  const [selectedOperators, setSelectedOperators] = useState<string[]>([])
-  const [image, setImage] = useState('')
+  const [selectedOperators, setSelectedOperators] = useState<string[]>(campaign?.operators ?? [])
+  const [image, setImage] = useState(campaign?.image ?? '')
+  const isEditing = Boolean(campaign)
 
   const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -239,8 +359,8 @@ function CampaignForm() {
     const startDate = String(form.get('startDate'))
     const endDate = String(form.get('endDate'))
     const rules = String(form.get('rules')).split('\n').map((rule) => rule.trim()).filter(Boolean)
-    const campaign: Campaign = {
-      id: `${slugify(name)}-${Date.now()}`,
+    const submittedCampaign: Campaign = {
+      id: campaign?.id ?? `${slugify(name)}-${Date.now()}`,
       name,
       shortName: String(form.get('shortName') || name),
       period: `${new Date(`${startDate}T12:00:00`).toLocaleDateString('pt-BR')} — ${new Date(`${endDate}T12:00:00`).toLocaleDateString('pt-BR')}`,
@@ -249,7 +369,7 @@ function CampaignForm() {
       prizeType: String(form.get('prizeType')) as PrizeType,
       audience: String(form.get('audience')) as Audience,
       mainPrize: String(form.get('mainPrize')),
-      image: image || '/campaigns/show-premios.jpg',
+      image: image || campaign?.image || '/campaigns/show-premios.jpg',
       status: String(form.get('status')) as CampaignStatus,
       description: String(form.get('description')),
       rules,
@@ -260,34 +380,40 @@ function CampaignForm() {
         unit: String(form.get('unit')) as UnitType,
       }],
       accent: String(form.get('accent')),
-      icon: 'trophy',
+      icon: campaign?.icon ?? 'trophy',
     }
-    addCampaign(campaign)
-    setSuccess(`Campanha “${name}” adicionada com sucesso.`)
-    event.currentTarget.reset()
-    setSelectedOperators([])
-    setImage('')
+    if (isEditing) {
+      updateCampaign(submittedCampaign)
+      setSuccess(`Campanha “${name}” atualizada com sucesso.`)
+      window.setTimeout(() => onSaved?.(), 900)
+    } else {
+      addCampaign(submittedCampaign)
+      setSuccess(`Campanha “${name}” adicionada com sucesso.`)
+      event.currentTarget.reset()
+      setSelectedOperators([])
+      setImage('')
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-card">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-xl font-black text-navy-950">Cadastrar nova campanha</h2>
-          <p className="mt-1 text-sm text-slate-500">A campanha aparecerá imediatamente no dashboard.</p>
+          <h2 className="text-xl font-black text-navy-950">{isEditing ? 'Editar campanha vigente' : 'Cadastrar nova campanha'}</h2>
+          <p className="mt-1 text-sm text-slate-500">{isEditing ? 'As alterações aparecerão imediatamente no dashboard.' : 'A campanha aparecerá imediatamente no dashboard.'}</p>
         </div>
         {success && <span className="flex items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700"><CheckCircle2 className="h-4 w-4" /> {success}</span>}
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <TextField name="name" label="Nome da campanha" required />
-        <TextField name="shortName" label="Nome curto" required />
-        <TextField name="startDate" label="Data inicial" type="date" required />
-        <TextField name="endDate" label="Data final" type="date" required />
-        <SelectField name="status" label="Status" options={['Ativa', 'Futura', 'Encerrada']} />
-        <SelectField name="prizeType" label="Tipo de prêmio" options={['Viagem', 'Experiência', 'Produto', 'Dinheiro']} />
-        <SelectField name="audience" label="Público elegível" options={['Todos', 'Corretores', 'Supervisores']} />
-        <TextField name="mainPrize" label="Prêmio principal" required />
+        <TextField name="name" label="Nome da campanha" defaultValue={campaign?.name} required />
+        <TextField name="shortName" label="Nome curto" defaultValue={campaign?.shortName} required />
+        <TextField name="startDate" label="Data inicial" type="date" defaultValue={campaign ? dateFromPeriod(campaign.period, 'start') : undefined} required />
+        <TextField name="endDate" label="Data final" type="date" defaultValue={campaign?.endDate || (campaign ? dateFromPeriod(campaign.period, 'end') : undefined)} required />
+        <SelectField name="status" label="Status" options={['Ativa', 'Futura', 'Encerrada']} defaultValue={campaign?.status} />
+        <SelectField name="prizeType" label="Tipo de prêmio" options={['Viagem', 'Experiência', 'Produto', 'Dinheiro']} defaultValue={campaign?.prizeType} />
+        <SelectField name="audience" label="Público elegível" options={['Todos', 'Corretores', 'Supervisores']} defaultValue={campaign?.audience} />
+        <TextField name="mainPrize" label="Prêmio principal" defaultValue={campaign?.mainPrize} required />
       </div>
 
       <fieldset className="mt-5">
@@ -313,52 +439,55 @@ function CampaignForm() {
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <label className="md:col-span-2">
           <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Descrição</span>
-          <textarea name="description" required rows={3} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500" />
+          <textarea name="description" defaultValue={campaign?.description} required rows={3} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500" />
         </label>
         <label className="md:col-span-2">
           <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Regras principais, uma por linha</span>
-          <textarea name="rules" required rows={4} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500" />
+          <textarea name="rules" defaultValue={campaign?.rules.join('\n')} required rows={4} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500" />
         </label>
-        <TextField name="goalLabel" label="Nome da meta" required />
-        <SelectField name="unit" label="Unidade da meta" options={['valor', 'vidas', 'contratos']} />
-        <TextField name="current" label="Realizado atual" type="number" required />
-        <TextField name="target" label="Meta" type="number" required />
-        <SelectField name="accent" label="Cor do card" options={accentOptions} />
+        <TextField name="goalLabel" label="Nome da meta" defaultValue={campaign?.goals[0]?.label} required />
+        <SelectField name="unit" label="Unidade da meta" options={['valor', 'vidas', 'contratos']} defaultValue={campaign?.goals[0]?.unit} />
+        <TextField name="current" label="Realizado atual" type="number" defaultValue={campaign?.goals[0]?.current} required />
+        <TextField name="target" label="Meta" type="number" defaultValue={campaign?.goals[0]?.target} required />
+        <SelectField name="accent" label="Cor do card" options={accentOptions} defaultValue={campaign?.accent} />
         <label>
           <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Imagem da campanha</span>
           <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleImage} className="mt-2 block w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs" />
+          {campaign?.image && <span className="mt-1 block text-[10px] text-slate-400">Deixe vazio para manter a imagem atual.</span>}
         </label>
       </div>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <button type="button" onClick={() => navigate('/dashboard')} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600">Cancelar</button>
+        <button type="button" onClick={() => onCancel ? onCancel() : navigate('/dashboard')} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-600">Cancelar</button>
         <button type="submit" disabled={selectedOperators.length === 0} className="flex items-center justify-center gap-2 rounded-xl bg-navy-900 px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">
-          <CalendarPlus className="h-4 w-4" /> Publicar campanha
+          {isEditing ? <Save className="h-4 w-4" /> : <CalendarPlus className="h-4 w-4" />}
+          {isEditing ? 'Salvar alterações' : 'Publicar campanha'}
         </button>
       </div>
     </form>
   )
 }
 
-function TextField({ name, label, type = 'text', required = false }: {
+function TextField({ name, label, type = 'text', required = false, defaultValue }: {
   name: string
   label: string
   type?: string
   required?: boolean
+  defaultValue?: string | number
 }) {
   return (
     <label>
       <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">{label}</span>
-      <input name={name} type={type} required={required} min={type === 'number' ? 0 : undefined} step={type === 'number' ? 'any' : undefined} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500" />
+      <input name={name} type={type} required={required} defaultValue={defaultValue} min={type === 'number' ? 0 : undefined} step={type === 'number' ? 'any' : undefined} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500" />
     </label>
   )
 }
 
-function SelectField({ name, label, options }: { name: string; label: string; options: string[] }) {
+function SelectField({ name, label, options, defaultValue }: { name: string; label: string; options: string[]; defaultValue?: string }) {
   return (
     <label>
       <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">{label}</span>
-      <select name={name} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold outline-none focus:border-blue-500">
+      <select name={name} defaultValue={defaultValue} className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold outline-none focus:border-blue-500">
         {options.map((option) => <option key={option} value={option}>{option}</option>)}
       </select>
     </label>

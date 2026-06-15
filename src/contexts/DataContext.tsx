@@ -22,6 +22,7 @@ interface DataContextValue {
   productionReport: ProductionReport
   salesTeams: SalesTeam[]
   addCampaign: (campaign: Campaign) => void
+  updateCampaign: (campaign: Campaign) => void
   applyReport: (update: ReportUpdate) => void
 }
 
@@ -69,6 +70,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
     addCampaign: (campaign) => updateData((current) => ({
       ...current,
       campaigns: [campaign, ...current.campaigns.filter((item) => item.id !== campaign.id)],
+    })),
+    updateCampaign: (campaign) => updateData((current) => ({
+      ...current,
+      campaigns: current.campaigns.map((item) => item.id === campaign.id ? campaign : item),
     })),
     applyReport: (update) => updateData((current) => ({
       ...current,

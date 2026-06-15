@@ -86,6 +86,7 @@ Após entrar, clique em **Administração** no cabeçalho.
 
 - **Adicionar relatório:** envie um PDF SixVox de produção de corretores ou supervisores. O sistema identifica o tipo, extrai período, emissão, totais e ranking e apresenta uma prévia antes da confirmação.
 - **Nova campanha:** informe período, operadoras, prêmio, público, regras, meta e imagem. A campanha passa a integrar indicadores, filtros e cards imediatamente.
+- **Gerenciar campanhas:** busque campanhas existentes, filtre por status e atualize período, prêmio, público, operadoras, regras, metas, progresso e imagem.
 
 Nesta versão, alterações administrativas são persistidas em `localStorage`, apenas no navegador em que foram cadastradas. Para compartilhar atualizações automaticamente entre vários computadores, conecte o `DataContext` a uma API e banco de dados.
 
