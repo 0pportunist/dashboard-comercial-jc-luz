@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
+import { Toast } from '../components/Toast'
 import { useAuth } from '../contexts/AuthContext'
 
 interface LocationState {
@@ -10,7 +11,7 @@ interface LocationState {
   }
 }
 
-export function Login() {
+export function LoginPage() {
   const { isAuthenticated, isConfigured, login } = useAuth()
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -37,6 +38,7 @@ export function Login() {
 
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-navy-950 px-4 py-10">
+      {error && <Toast message={error} onClose={() => setError('')} />}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(41,121,255,0.24),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(185,239,47,0.16),transparent_35%)]" />
       <section className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl">
         <div className="bg-navy-900 px-7 py-8 text-white">
@@ -87,12 +89,6 @@ export function Login() {
               </button>
             </span>
           </label>
-
-          {error && (
-            <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs font-semibold leading-5 text-red-700">
-              {error}
-            </p>
-          )}
 
           <button
             type="submit"
