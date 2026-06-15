@@ -99,6 +99,7 @@ export function Dashboard() {
         onRankingsClick={() => scrollTo(rankingsRef)}
         onTeamsClick={() => scrollTo(teamsRef)}
         onAdminClick={() => navigate('/admin')}
+        onAssistantClick={() => navigate('/assistant')}
         onSignOut={logout}
         reportPeriod={productionReport.period}
         reportIssuedAt={productionReport.issuedAt}

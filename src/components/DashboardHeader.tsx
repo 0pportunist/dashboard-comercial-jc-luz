@@ -7,6 +7,7 @@ interface DashboardHeaderProps {
   onRankingsClick: () => void
   onTeamsClick: () => void
   onAdminClick: () => void
+  onAssistantClick: () => void
   onSignOut: () => void
   reportPeriod: string
   reportIssuedAt: string
@@ -18,6 +19,7 @@ export function DashboardHeader({
   onRankingsClick,
   onTeamsClick,
   onAdminClick,
+  onAssistantClick,
   onSignOut,
   reportPeriod,
   reportIssuedAt,
@@ -37,6 +39,7 @@ export function DashboardHeader({
             <button onClick={onCampaignsClick} className="transition hover:text-white">Campanhas</button>
             <button onClick={onRankingsClick} className="transition hover:text-white">Rankings</button>
             <button onClick={onTeamsClick} className="transition hover:text-white">Equipes</button>
+            <button onClick={onAssistantClick} className="transition hover:text-white">Assistente de IA</button>
           </div>
           <div className="flex items-center gap-2">
             <button
