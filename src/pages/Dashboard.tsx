@@ -95,7 +95,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] text-slate-800">
+    <div className="min-h-screen bg-white text-slate-800">
       <DashboardHeader
         onOverviewClick={() => scrollTo(overviewRef)}
         onCampaignsClick={() => scrollTo(campaignsRef)}

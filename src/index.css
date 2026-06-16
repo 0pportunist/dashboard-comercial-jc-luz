@@ -7,7 +7,7 @@
 :root {
   font-family: Inter, "Segoe UI", sans-serif;
   color: #0f172a;
-  background: #f5f7fb;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -37,8 +37,8 @@ button {
 }
 
 ::selection {
-  color: #081b3d;
-  background: #b9ef2f;
+  color: #003c89;
+  background: #b7c72c;
 }
 
 ::-webkit-scrollbar {

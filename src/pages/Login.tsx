@@ -39,7 +39,7 @@ export function LoginPage() {
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-navy-950 px-4 py-10">
       {error && <Toast message={error} onClose={() => setError('')} />}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(41,121,255,0.24),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(185,239,47,0.16),transparent_35%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.18),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(183,199,44,0.2),transparent_35%)]" />
       <section className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl">
         <div className="bg-navy-900 px-7 py-8 text-white">
           <div>

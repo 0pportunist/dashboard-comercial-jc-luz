@@ -8,7 +8,7 @@ export function RealtimeSalesButton({ onClick }: RealtimeSalesButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-limebrand px-5 py-4 text-sm font-black text-navy-950 shadow-glow transition hover:-translate-y-0.5 hover:bg-[#c8f75a]"
+      className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-limebrand px-5 py-4 text-sm font-black text-navy-950 shadow-glow transition hover:-translate-y-0.5 hover:bg-[#c6d53c]"
     >
       <span className="relative flex h-2.5 w-2.5">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-70" />

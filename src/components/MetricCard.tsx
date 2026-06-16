@@ -10,8 +10,8 @@ interface MetricCardProps {
 
 const tones = {
   blue: 'bg-blue-50 text-blue-700',
-  lime: 'bg-lime-50 text-lime-700',
-  gold: 'bg-amber-50 text-amber-700',
+  lime: 'bg-limebrand/15 text-navy-900',
+  gold: 'bg-limebrand/15 text-navy-900',
   slate: 'bg-slate-100 text-slate-600',
 }
 
