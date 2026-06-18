@@ -1,4 +1,4 @@
-export type DashboardTheme = 'default' | 'supermed' | 'qualicorp' | 'allcare'
+export type DashboardTheme = 'default' | 'supermed' | 'qualicorp' | 'allcare' | 'dixmed'
 
 function normalizeThemeTarget(value: string) {
   return value
@@ -27,9 +27,14 @@ export function isAllcareSelection(value: string) {
   return normalizeThemeTarget(value).replace(/\s+/g, '').includes('allcare')
 }
 
+export function isDixMedSelection(value: string) {
+  return normalizeThemeTarget(value).replace(/\s+/g, '').includes('dixmed')
+}
+
 export function resolveDashboardTheme(...selectedValues: string[]): DashboardTheme {
   if (selectedValues.some(isSupermedSelection)) return 'supermed'
   if (selectedValues.some(isQualicorpSelection)) return 'qualicorp'
   if (selectedValues.some(isAllcareSelection)) return 'allcare'
+  if (selectedValues.some(isDixMedSelection)) return 'dixmed'
   return 'default'
 }

@@ -44,6 +44,13 @@ export default {
         'allcare-secondary-bright': '#B833F5',
         'allcare-accent': '#FF5A76',
         'allcare-accent-strong': '#FF2F67',
+        'dixmed-primary': '#5B21B6',
+        'dixmed-primary-dark': '#1B1033',
+        'dixmed-primary-deep': '#0B0618',
+        'dixmed-secondary': '#2563EB',
+        'dixmed-secondary-bright': '#38BDF8',
+        'dixmed-accent': '#FEC514',
+        'dixmed-accent-strong': '#FFB000',
       },
       boxShadow: {
         card: '0 16px 45px rgba(0, 60, 137, 0.08)',

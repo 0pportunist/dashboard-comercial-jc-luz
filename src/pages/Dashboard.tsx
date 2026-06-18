@@ -67,6 +67,7 @@ export function Dashboard() {
   const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')
   const closestEnding = [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0]
   const dashboardTheme = resolveDashboardTheme(selectedAdministrator, selectedOperator)
+  const dashboardThemeClass = dashboardTheme === 'default' ? '' : `dashboard-theme-${dashboardTheme}`
 
   const filteredCampaigns = useFilteredCampaigns(campaigns, {
     query,
@@ -99,11 +100,7 @@ export function Dashboard() {
   return (
     <div
       data-theme={dashboardTheme}
-      className={`dashboard-theme min-h-screen text-slate-800 ${
-        dashboardTheme === 'supermed' ? 'dashboard-theme-supermed' : ''
-      } ${dashboardTheme === 'qualicorp' ? 'dashboard-theme-qualicorp' : ''} ${
-        dashboardTheme === 'allcare' ? 'dashboard-theme-allcare' : ''
-      }`}
+      className={`dashboard-theme min-h-screen text-slate-800 ${dashboardThemeClass}`}
     >
       <DashboardHeader
         onOverviewClick={() => scrollTo(overviewRef)}
