@@ -111,22 +111,25 @@ button {
 }
 
 .dashboard-theme-qualicorp {
-  --dashboard-page: #ffffff;
+  --dashboard-page: #f4f8fb;
   --dashboard-surface: #ffffff;
-  --dashboard-surface-muted: rgba(0, 132, 182, 0.1);
+  --dashboard-surface-muted: #eaf4fa;
   --dashboard-primary: #002f5f;
-  --dashboard-primary-soft: rgba(0, 192, 243, 0.16);
+  --dashboard-primary-soft: rgba(0, 174, 239, 0.14);
   --dashboard-accent: #fcaf17;
-  --dashboard-accent-soft: rgba(252, 175, 23, 0.18);
-  --dashboard-text: #1e1e1e;
+  --dashboard-accent-soft: rgba(254, 199, 20, 0.18);
+  --dashboard-text: #101828;
   --dashboard-text-muted: #64748b;
-  --dashboard-border: #00c0f3;
-  --dashboard-header: #002f5f;
-  --dashboard-header-glow: rgba(0, 192, 243, 0.28);
+  --dashboard-border: #b9dcef;
+  --dashboard-border-strong: #005884;
+  --dashboard-header: #0b111d;
+  --dashboard-header-glow: rgba(0, 174, 239, 0.2);
   --dashboard-action: #fcaf17;
-  --dashboard-action-hover: #004071;
+  --dashboard-action-hover: #fec714;
   --dashboard-action-text: #1e1e1e;
-  --dashboard-shadow: 0 16px 45px rgba(0, 47, 95, 0.08);
+  --dashboard-secondary-action: #002f5f;
+  --dashboard-secondary-action-hover: #004071;
+  --dashboard-shadow: 0 18px 52px rgba(0, 47, 95, 0.22);
 }
 
 .dashboard-theme,
@@ -159,9 +162,14 @@ button {
   background-color: var(--dashboard-accent);
 }
 
+.dashboard-theme-qualicorp .bg-navy-950,
+.dashboard-theme-qualicorp .bg-navy-900 {
+  background-color: var(--dashboard-secondary-action);
+}
+
 .dashboard-theme-supermed .hover\:bg-navy-800:hover,
 .dashboard-theme-qualicorp .hover\:bg-navy-800:hover {
-  background-color: #004071;
+  background-color: var(--dashboard-secondary-action-hover);
 }
 
 .dashboard-theme-supermed .text-navy-950,
@@ -200,7 +208,7 @@ button {
 .dashboard-theme-qualicorp .border-blue-300,
 .dashboard-theme-qualicorp .border-blue-500,
 .dashboard-theme-qualicorp .focus\:border-blue-500:focus {
-  border-color: var(--dashboard-primary);
+  border-color: var(--dashboard-border-strong);
 }
 
 .dashboard-theme-supermed .ring-blue-500\/10,
@@ -316,6 +324,10 @@ button {
 }
 
 .dashboard-theme-qualicorp .dashboard-header {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(0, 174, 239, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 90%, rgba(252, 175, 23, 0.16), transparent 36%),
+    linear-gradient(135deg, #0b111d 0%, #071527 46%, #002f5f 100%);
   color: #ffffff;
 }
 
@@ -337,12 +349,13 @@ button {
 }
 
 .dashboard-theme-qualicorp .dashboard-hero-highlight {
-  color: #00c0f3;
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(0, 174, 239, 0.18);
 }
 
 .dashboard-theme-qualicorp .dashboard-hero-eyebrow {
-  border-color: rgba(0, 192, 243, 0.42);
-  background-color: rgba(0, 132, 182, 0.18);
+  border-color: rgba(252, 175, 23, 0.38);
+  background-color: rgba(252, 175, 23, 0.12);
   color: #ffffff;
 }
 
@@ -361,10 +374,11 @@ button {
 }
 
 .dashboard-theme-qualicorp .dashboard-report-card {
-  border-color: rgba(0, 192, 243, 0.28);
+  border-color: rgba(0, 174, 239, 0.22);
   background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
 }
 
 .dashboard-theme-qualicorp .dashboard-report-card .text-limebrand {
-  color: #00c0f3;
+  color: #fcaf17;
 }
