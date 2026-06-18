@@ -37,6 +37,13 @@ export default {
         'qualicorp-accent-strong': '#FEC714',
         'qualicorp-border': '#00C0F3',
         'qualicorp-hover': '#004071',
+        'allcare-primary': '#4B0F8F',
+        'allcare-primary-dark': '#1A0A2E',
+        'allcare-primary-deep': '#0E0718',
+        'allcare-secondary': '#912CF1',
+        'allcare-secondary-bright': '#B833F5',
+        'allcare-accent': '#FF5A76',
+        'allcare-accent-strong': '#FF2F67',
       },
       boxShadow: {
         card: '0 16px 45px rgba(0, 60, 137, 0.08)',

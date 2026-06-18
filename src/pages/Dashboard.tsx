@@ -101,7 +101,9 @@ export function Dashboard() {
       data-theme={dashboardTheme}
       className={`dashboard-theme min-h-screen text-slate-800 ${
         dashboardTheme === 'supermed' ? 'dashboard-theme-supermed' : ''
-      } ${dashboardTheme === 'qualicorp' ? 'dashboard-theme-qualicorp' : ''}`}
+      } ${dashboardTheme === 'qualicorp' ? 'dashboard-theme-qualicorp' : ''} ${
+        dashboardTheme === 'allcare' ? 'dashboard-theme-allcare' : ''
+      }`}
     >
       <DashboardHeader
         onOverviewClick={() => scrollTo(overviewRef)}
