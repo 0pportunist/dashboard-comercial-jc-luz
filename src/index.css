@@ -69,3 +69,133 @@ button {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
 }
+
+.dashboard-theme {
+  --dashboard-page: #ffffff;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: #edf5ff;
+  --dashboard-primary: #003c89;
+  --dashboard-primary-soft: rgba(0, 60, 137, 0.08);
+  --dashboard-accent: #b7c72c;
+  --dashboard-accent-soft: rgba(183, 199, 44, 0.16);
+  --dashboard-text: #0f172a;
+  --dashboard-text-muted: #64748b;
+  --dashboard-border: #e2e8f0;
+  --dashboard-header: #003c89;
+  --dashboard-header-glow: rgba(183, 199, 44, 0.18);
+  --dashboard-action: #003c89;
+  --dashboard-action-hover: #0750ad;
+  --dashboard-action-text: #ffffff;
+  --dashboard-shadow: 0 16px 45px rgba(0, 60, 137, 0.08);
+  background: var(--dashboard-page);
+  color: var(--dashboard-text);
+}
+
+.dashboard-theme-supermed {
+  --dashboard-page: #fffaf0;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: rgba(244, 179, 33, 0.13);
+  --dashboard-primary: #f4b321;
+  --dashboard-primary-soft: rgba(244, 179, 33, 0.18);
+  --dashboard-accent: #111111;
+  --dashboard-accent-soft: rgba(17, 17, 17, 0.08);
+  --dashboard-text: #111111;
+  --dashboard-text-muted: #525252;
+  --dashboard-border: rgba(17, 17, 17, 0.12);
+  --dashboard-header: #111111;
+  --dashboard-header-glow: rgba(244, 179, 33, 0.28);
+  --dashboard-action: #f4b321;
+  --dashboard-action-hover: #dda016;
+  --dashboard-action-text: #111111;
+  --dashboard-shadow: 0 16px 45px rgba(17, 17, 17, 0.08);
+}
+
+.dashboard-theme,
+.dashboard-theme * {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, opacity;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-theme,
+  .dashboard-theme * {
+    transition-duration: 0ms;
+  }
+}
+
+.dashboard-theme .shadow-card {
+  box-shadow: var(--dashboard-shadow);
+}
+
+.dashboard-theme-supermed .bg-white {
+  background-color: var(--dashboard-surface);
+}
+
+.dashboard-theme-supermed .bg-navy-950,
+.dashboard-theme-supermed .bg-navy-900 {
+  background-color: var(--dashboard-accent);
+}
+
+.dashboard-theme-supermed .hover\:bg-navy-800:hover {
+  background-color: #2a2a2a;
+}
+
+.dashboard-theme-supermed .text-navy-950,
+.dashboard-theme-supermed .text-navy-900,
+.dashboard-theme-supermed .text-blue-700,
+.dashboard-theme-supermed .text-blue-600 {
+  color: var(--dashboard-text);
+}
+
+.dashboard-theme-supermed .bg-blue-50,
+.dashboard-theme-supermed .bg-blue-50\/30,
+.dashboard-theme-supermed .bg-blue-50\/50,
+.dashboard-theme-supermed .bg-blue-50\/60,
+.dashboard-theme-supermed .bg-blue-50\/70,
+.dashboard-theme-supermed .bg-slate-50 {
+  background-color: var(--dashboard-surface-muted);
+}
+
+.dashboard-theme-supermed .border-blue-100,
+.dashboard-theme-supermed .border-blue-200,
+.dashboard-theme-supermed .border-blue-300,
+.dashboard-theme-supermed .border-blue-500,
+.dashboard-theme-supermed .focus\:border-blue-500:focus {
+  border-color: var(--dashboard-primary);
+}
+
+.dashboard-theme-supermed .ring-blue-500\/10,
+.dashboard-theme-supermed .focus\:ring-blue-500\/10:focus {
+  --tw-ring-color: rgba(244, 179, 33, 0.25);
+}
+
+.dashboard-theme-supermed .bg-blue-500,
+.dashboard-theme-supermed .bg-blue-600,
+.dashboard-theme-supermed .bg-blue-700,
+.dashboard-theme-supermed .hover\:bg-blue-700:hover,
+.dashboard-theme-supermed .bg-limebrand,
+.dashboard-theme-supermed .bg-goldbrand {
+  background-color: var(--dashboard-primary);
+}
+
+.dashboard-theme-supermed .text-limebrand,
+.dashboard-theme-supermed .text-goldbrand,
+.dashboard-theme-supermed .text-amber-700,
+.dashboard-theme-supermed .text-amber-800,
+.dashboard-theme-supermed .text-amber-900,
+.dashboard-theme-supermed .text-amber-600 {
+  color: var(--dashboard-accent);
+}
+
+.dashboard-theme-supermed .bg-limebrand\/15,
+.dashboard-theme-supermed .bg-amber-50,
+.dashboard-theme-supermed .bg-amber-50\/60 {
+  background-color: var(--dashboard-primary-soft);
+}
+
+.dashboard-theme-supermed .border-slate-100,
+.dashboard-theme-supermed .border-slate-200,
+.dashboard-theme-supermed .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--dashboard-border);
+}

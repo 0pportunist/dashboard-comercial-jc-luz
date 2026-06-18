@@ -26,7 +26,7 @@ export function AdministratorFilters({
             aria-pressed={selected === 'Todas'}
             className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition ${
               selected === 'Todas'
-                ? 'bg-navy-900 text-white shadow-sm'
+                ? 'bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] shadow-sm'
                 : 'border border-slate-200 bg-slate-50 text-slate-600 hover:border-blue-200 hover:bg-blue-50'
             }`}
           >
@@ -47,7 +47,7 @@ export function AdministratorFilters({
                 title={administrator}
                 className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border px-4 transition ${
                   isSelected
-                    ? 'border-navy-900 bg-navy-900 shadow-md'
+                    ? 'border-[var(--dashboard-accent)] bg-[var(--dashboard-accent)] shadow-md'
                     : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
                 }`}
               >

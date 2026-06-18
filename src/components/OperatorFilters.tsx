@@ -87,7 +87,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
             aria-pressed={selected === 'Todas'}
             className={`flex h-12 min-w-[96px] shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-xs font-bold transition ${
               selected === 'Todas'
-                ? 'bg-navy-900 text-white shadow-md'
+                ? 'bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] shadow-md'
                 : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -110,7 +110,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
                 title={operator}
                 className={`flex h-12 min-w-[122px] shrink-0 items-center justify-center rounded-xl px-4 transition ${
                   isSelected
-                    ? 'bg-navy-900 shadow-md'
+                    ? 'bg-[var(--dashboard-accent)] shadow-md'
                     : 'bg-slate-50 hover:bg-slate-100'
                 }`}
               >
@@ -150,7 +150,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
           disabled={!canScrollRight}
           aria-label="Ver próximas operadoras"
           title="Próximas operadoras"
-          className="flex h-10 w-9 items-center justify-center rounded-lg bg-navy-900 text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+          className="flex h-10 w-9 items-center justify-center rounded-lg bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] transition hover:bg-[var(--dashboard-action-hover)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
         >
           <ChevronRight className="h-5 w-5" />
         </button>

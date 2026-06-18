@@ -32,6 +32,7 @@ import { administrators } from '../data/administrators'
 import { operators as operatorCatalog } from '../data/campaigns'
 import { useFilteredCampaigns } from '../hooks/useFilteredCampaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
+import { resolveDashboardTheme } from '../utils/dashboardTheme'
 
 const statusOptions: Array<CampaignStatus | 'Todos'> = ['Todos', 'Ativa', 'Futura', 'Encerrada']
 const prizeOptions: Array<PrizeType | 'Todos'> = ['Todos', 'Viagem', 'Experiência', 'Produto', 'Dinheiro']
@@ -65,6 +66,7 @@ export function Dashboard() {
   const futureCampaigns = campaigns.filter((campaign) => campaign.status === 'Futura')
   const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')
   const closestEnding = [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0]
+  const dashboardTheme = resolveDashboardTheme(selectedAdministrator, selectedOperator)
 
   const filteredCampaigns = useFilteredCampaigns(campaigns, {
     query,
@@ -95,7 +97,10 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-800">
+    <div
+      data-theme={dashboardTheme}
+      className={`dashboard-theme min-h-screen text-slate-800 ${dashboardTheme === 'supermed' ? 'dashboard-theme-supermed' : ''}`}
+    >
       <DashboardHeader
         onOverviewClick={() => scrollTo(overviewRef)}
         onCampaignsClick={() => scrollTo(campaignsRef)}
@@ -144,7 +149,7 @@ export function Dashboard() {
             </div>
             <button
               onClick={() => scrollTo(campaignsRef)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-xs font-bold text-white transition hover:bg-navy-800"
+              className="flex items-center justify-center gap-2 rounded-xl bg-[var(--dashboard-action)] px-4 py-3 text-xs font-bold text-[var(--dashboard-action-text)] transition hover:bg-[var(--dashboard-action-hover)]"
             >
               Ver Campanhas Ativas <ArrowRight className="h-4 w-4" />
             </button>
@@ -277,7 +282,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
       <div>
         <Search className="mx-auto h-8 w-8 text-slate-300" />
         <h3 className="mt-3 font-black text-navy-950">Nenhuma campanha encontrada</h3>
-        <button onClick={onClear} className="mt-4 rounded-xl bg-navy-900 px-4 py-2.5 text-xs font-bold text-white">Limpar filtros</button>
+        <button onClick={onClear} className="mt-4 rounded-xl bg-[var(--dashboard-action)] px-4 py-2.5 text-xs font-bold text-[var(--dashboard-action-text)]">Limpar filtros</button>
       </div>
     </div>
   )
@@ -288,10 +293,10 @@ function RealtimeModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-50 grid place-items-center bg-navy-950/70 p-4 backdrop-blur-sm" onMouseDown={onClose}>
       <div className="relative w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
         <button onClick={onClose} className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"><X className="h-4 w-4" /></button>
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-limebrand text-navy-950 shadow-glow"><Sparkles className="h-7 w-7" /></div>
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[var(--dashboard-primary)] text-[var(--dashboard-action-text)] shadow-glow"><Sparkles className="h-7 w-7" /></div>
         <h2 className="mt-5 text-xl font-black text-navy-950">Vendas em tempo real</h2>
         <p className="mt-3 text-sm leading-6 text-slate-600">Funcionalidade em desenvolvimento. Em breve este painel será integrado às vendas em tempo real.</p>
-        <button onClick={onClose} className="mt-6 w-full rounded-xl bg-navy-900 py-3 text-sm font-black text-white">Entendido</button>
+        <button onClick={onClose} className="mt-6 w-full rounded-xl bg-[var(--dashboard-action)] py-3 text-sm font-black text-[var(--dashboard-action-text)]">Entendido</button>
       </div>
     </div>
   )

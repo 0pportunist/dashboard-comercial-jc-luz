@@ -25,6 +25,9 @@ export default {
         },
         limebrand: '#b7c72c',
         goldbrand: '#b7c72c',
+        'supermed-primary': '#F4B321',
+        'supermed-secondary': '#FFFFFF',
+        'supermed-accent': '#111111',
       },
       boxShadow: {
         card: '0 16px 45px rgba(0, 60, 137, 0.08)',

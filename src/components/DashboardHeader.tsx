@@ -25,8 +25,8 @@ export function DashboardHeader({
   reportIssuedAt,
 }: DashboardHeaderProps) {
   return (
-    <header className="relative overflow-hidden bg-navy-950 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(183,199,44,0.18),transparent_32%),radial-gradient(circle_at_20%_100%,rgba(255,255,255,0.18),transparent_38%)]" />
+    <header className="relative overflow-hidden bg-[var(--dashboard-header)] text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,var(--dashboard-header-glow),transparent_32%),radial-gradient(circle_at_20%_100%,rgba(255,255,255,0.18),transparent_38%)]" />
       <div className="relative mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between">
           <BrandLogo
