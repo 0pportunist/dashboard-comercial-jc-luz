@@ -199,3 +199,57 @@ button {
 .dashboard-theme-supermed .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
   border-color: var(--dashboard-border);
 }
+
+.dashboard-theme-supermed .dashboard-header {
+  color: #ffffff;
+}
+
+.dashboard-theme-supermed .dashboard-header .text-navy-950,
+.dashboard-theme-supermed .dashboard-header .text-navy-900,
+.dashboard-theme-supermed .dashboard-header .text-blue-700,
+.dashboard-theme-supermed .dashboard-header .text-blue-600,
+.dashboard-theme-supermed .dashboard-header .text-limebrand,
+.dashboard-theme-supermed .dashboard-header .text-goldbrand {
+  color: inherit;
+}
+
+.dashboard-theme-supermed .dashboard-header-nav,
+.dashboard-theme-supermed .dashboard-header-button,
+.dashboard-theme-supermed .dashboard-admin-pill,
+.dashboard-theme-supermed .dashboard-hero-description,
+.dashboard-theme-supermed .dashboard-report-card {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.dashboard-theme-supermed .dashboard-hero-highlight {
+  color: #ffffff;
+}
+
+.dashboard-theme-supermed .dashboard-hero-eyebrow {
+  border-color: rgba(244, 179, 33, 0.42);
+  background-color: rgba(244, 179, 33, 0.18);
+  color: #f4b321;
+}
+
+.dashboard-theme-supermed .dashboard-hero-eyebrow .bg-limebrand {
+  background-color: #f4b321;
+}
+
+.dashboard-theme-supermed .dashboard-admin-pill .bg-goldbrand {
+  background-color: #f4b321;
+  color: #111111;
+}
+
+.dashboard-theme-supermed .dashboard-admin-pill .text-limebrand,
+.dashboard-theme-supermed .dashboard-report-label {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.dashboard-theme-supermed .dashboard-report-card {
+  border-color: rgba(255, 255, 255, 0.16);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-theme-supermed .dashboard-report-card .text-limebrand {
+  color: #f4b321;
+}
