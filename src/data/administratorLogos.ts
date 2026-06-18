@@ -23,6 +23,6 @@ export const administratorLogos: Record<string, AdministratorLogo> = {
   },
   DixMed: {
     src: dixmedLogo,
-    imageClassName: 'max-h-9 max-w-[118px]',
+    imageClassName: 'max-h-8 max-w-[118px]',
   },
 }
