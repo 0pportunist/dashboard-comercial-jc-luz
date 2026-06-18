@@ -28,6 +28,12 @@ export default {
         'supermed-primary': '#F4B321',
         'supermed-secondary': '#FFFFFF',
         'supermed-accent': '#111111',
+        'qualicorp-primary': '#002F5F',
+        'qualicorp-primary-dark': '#1E2C51',
+        'qualicorp-secondary': '#38BDF6',
+        'qualicorp-secondary-alt': '#00C0F3',
+        'qualicorp-accent': '#FEC714',
+        'qualicorp-accent-alt': '#FCAF17',
       },
       boxShadow: {
         card: '0 16px 45px rgba(0, 60, 137, 0.08)',
