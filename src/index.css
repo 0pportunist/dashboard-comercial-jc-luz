@@ -111,20 +111,20 @@ button {
 }
 
 .dashboard-theme-qualicorp {
-  --dashboard-page: #f6fbfe;
+  --dashboard-page: #ffffff;
   --dashboard-surface: #ffffff;
-  --dashboard-surface-muted: rgba(56, 189, 246, 0.12);
+  --dashboard-surface-muted: rgba(0, 132, 182, 0.1);
   --dashboard-primary: #002f5f;
-  --dashboard-primary-soft: rgba(56, 189, 246, 0.16);
-  --dashboard-accent: #fec714;
-  --dashboard-accent-soft: rgba(254, 199, 20, 0.18);
+  --dashboard-primary-soft: rgba(0, 192, 243, 0.16);
+  --dashboard-accent: #fcaf17;
+  --dashboard-accent-soft: rgba(252, 175, 23, 0.18);
   --dashboard-text: #1e1e1e;
   --dashboard-text-muted: #64748b;
-  --dashboard-border: #cfe8f3;
-  --dashboard-header: #1e2c51;
-  --dashboard-header-glow: rgba(56, 189, 246, 0.28);
-  --dashboard-action: #fec714;
-  --dashboard-action-hover: #fcaf17;
+  --dashboard-border: #00c0f3;
+  --dashboard-header: #002f5f;
+  --dashboard-header-glow: rgba(0, 192, 243, 0.28);
+  --dashboard-action: #fcaf17;
+  --dashboard-action-hover: #004071;
   --dashboard-action-text: #1e1e1e;
   --dashboard-shadow: 0 16px 45px rgba(0, 47, 95, 0.08);
 }
@@ -161,7 +161,7 @@ button {
 
 .dashboard-theme-supermed .hover\:bg-navy-800:hover,
 .dashboard-theme-qualicorp .hover\:bg-navy-800:hover {
-  background-color: #2a2a2a;
+  background-color: #004071;
 }
 
 .dashboard-theme-supermed .text-navy-950,
@@ -337,21 +337,21 @@ button {
 }
 
 .dashboard-theme-qualicorp .dashboard-hero-highlight {
-  color: #38bdf6;
+  color: #00c0f3;
 }
 
 .dashboard-theme-qualicorp .dashboard-hero-eyebrow {
-  border-color: rgba(56, 189, 246, 0.42);
-  background-color: rgba(56, 189, 246, 0.14);
+  border-color: rgba(0, 192, 243, 0.42);
+  background-color: rgba(0, 132, 182, 0.18);
   color: #ffffff;
 }
 
 .dashboard-theme-qualicorp .dashboard-hero-eyebrow .bg-limebrand {
-  background-color: #fec714;
+  background-color: #fcaf17;
 }
 
 .dashboard-theme-qualicorp .dashboard-admin-pill .bg-goldbrand {
-  background-color: #fec714;
+  background-color: #fcaf17;
   color: #1e1e1e;
 }
 
@@ -361,10 +361,10 @@ button {
 }
 
 .dashboard-theme-qualicorp .dashboard-report-card {
-  border-color: rgba(56, 189, 246, 0.24);
+  border-color: rgba(0, 192, 243, 0.28);
   background-color: rgba(255, 255, 255, 0.08);
 }
 
 .dashboard-theme-qualicorp .dashboard-report-card .text-limebrand {
-  color: #38bdf6;
+  color: #00c0f3;
 }
