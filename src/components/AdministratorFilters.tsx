@@ -38,7 +38,6 @@ export function AdministratorFilters({
             const logo = administratorLogos[administrator]
             const isSelected = selected === administrator
             const activeStyle = getBrandButtonStyle(administrator, isSelected)
-            const hasBrandStyle = Boolean(activeStyle)
 
             return (
               <button
@@ -52,9 +51,7 @@ export function AdministratorFilters({
                 className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border px-4 transition-colors duration-200 ${
                   isSelected
                     ? 'border-[var(--brand-button-border)] bg-[var(--brand-button-bg)] text-[var(--brand-button-text)] shadow-[var(--brand-button-shadow)] hover:bg-[var(--brand-button-hover)]'
-                    : hasBrandStyle
-                      ? 'border-[var(--brand-button-border)] bg-[var(--brand-button-bg)] text-[var(--brand-button-text)] hover:bg-[var(--brand-button-hover)]'
-                      : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
+                    : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
                 }`}
               >
                 {logo ? (

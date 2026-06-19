@@ -6,12 +6,6 @@ interface BrandButtonPalette {
   text: string
   shadow: string
   hoverBackground?: string
-  inactive?: {
-    background: string
-    border: string
-    text: string
-    hoverBackground?: string
-  }
 }
 
 type BrandButtonStyle = CSSProperties & {
@@ -104,12 +98,6 @@ const brandPalettes: Record<string, BrandButtonPalette> = {
     text: '#FFFFFF',
     shadow: '0 10px 24px rgba(0, 107, 104, 0.24)',
     hoverBackground: '#006B68',
-    inactive: {
-      background: '#F4FBFA',
-      border: '#B7E2DF',
-      text: '#004E4C',
-      hoverBackground: '#FFFFFF',
-    },
   },
 }
 
@@ -128,21 +116,9 @@ function getBrandPalette(brandName: string) {
 }
 
 export function getBrandButtonStyle(brandName: string, isActive: boolean): BrandButtonStyle | undefined {
+  if (!isActive) return undefined
+
   const palette = getBrandPalette(brandName)
-  const inactivePalette = palette.inactive
-
-  if (!isActive && !inactivePalette) return undefined
-
-  if (!isActive) {
-    return {
-      '--brand-button-bg': inactivePalette?.background,
-      '--brand-button-border': inactivePalette?.border,
-      '--brand-button-text': inactivePalette?.text,
-      '--brand-button-hover': inactivePalette?.hoverBackground ?? inactivePalette?.background,
-      '--brand-button-shadow': 'none',
-    }
-  }
-
   return {
     '--brand-button-bg': palette.background,
     '--brand-button-border': palette.border,
