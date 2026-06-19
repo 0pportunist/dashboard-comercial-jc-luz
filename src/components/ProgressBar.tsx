@@ -32,7 +32,7 @@ export function ProgressBar({ goal }: { goal: CampaignGoal }) {
       </div>
       <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
         <div
-          className={`h-full rounded-full transition-all duration-700 ${progressColor(percentage)}`}
+          className={`h-full rounded-full transition-[width] duration-[250ms] ease-out ${progressColor(percentage)}`}
           style={{ width: `${Math.min(percentage, 100)}%` }}
         />
       </div>

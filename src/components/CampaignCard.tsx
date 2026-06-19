@@ -31,7 +31,7 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
   return (
     <button
       onClick={() => onSelect(campaign)}
-      className={`group w-full overflow-hidden rounded-2xl border bg-white text-left shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
+      className={`group w-full overflow-hidden rounded-2xl border bg-white text-left shadow-card transition-colors duration-200 ${
         selected ? 'border-blue-500 ring-2 ring-blue-500/10' : 'border-slate-100'
       }`}
     >
@@ -39,11 +39,11 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
         <img
           src={campaign.image}
           alt={`Arte da campanha ${campaign.name}`}
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-black/15" />
         <div className="relative flex items-start justify-between">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-navy-950/45 backdrop-blur">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-navy-950/45">
             <Icon className="h-5 w-5" />
           </div>
           <StatusBadge status={campaign.status} />

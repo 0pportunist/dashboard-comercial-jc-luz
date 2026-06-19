@@ -87,7 +87,7 @@ export function DashboardHeader({
               Acompanhe metas, reconheça talentos e transforme cada venda em uma nova conquista.
             </p>
           </div>
-          <div className="dashboard-report-card flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur">
+          <div className="dashboard-report-card flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-limebrand">
               <CalendarDays className="h-5 w-5" />
             </div>

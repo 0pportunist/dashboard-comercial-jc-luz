@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react'
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Activity,
@@ -61,12 +61,30 @@ export function Dashboard() {
   const teamsRef = useRef<HTMLDivElement>(null)
   const campaignsRef = useRef<HTMLElement>(null)
 
-  const visibleOperators = [...new Set([...operatorCatalog, ...campaigns.flatMap((campaign) => campaign.operators)])]
-  const activeCampaigns = campaigns.filter((campaign) => campaign.status === 'Ativa')
-  const futureCampaigns = campaigns.filter((campaign) => campaign.status === 'Futura')
-  const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')
-  const closestEnding = [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0]
-  const dashboardTheme = resolveDashboardTheme(selectedAdministrator, selectedOperator)
+  const visibleOperators = useMemo(
+    () => [...new Set([...operatorCatalog, ...campaigns.flatMap((campaign) => campaign.operators)])],
+    [campaigns],
+  )
+  const activeCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.status === 'Ativa'),
+    [campaigns],
+  )
+  const futureCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.status === 'Futura'),
+    [campaigns],
+  )
+  const endedCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.status === 'Encerrada'),
+    [campaigns],
+  )
+  const closestEnding = useMemo(
+    () => [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0],
+    [activeCampaigns],
+  )
+  const dashboardTheme = useMemo(
+    () => resolveDashboardTheme(selectedAdministrator, selectedOperator),
+    [selectedAdministrator, selectedOperator],
+  )
   const dashboardThemeClass = dashboardTheme === 'default' ? '' : `dashboard-theme-${dashboardTheme}`
 
   const filteredCampaigns = useFilteredCampaigns(campaigns, {
@@ -291,7 +309,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
 
 function RealtimeModal({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-navy-950/70 p-4 backdrop-blur-sm" onMouseDown={onClose}>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-navy-950/70 p-4" onMouseDown={onClose}>
       <div className="relative w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
         <button onClick={onClose} className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"><X className="h-4 w-4" /></button>
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[var(--dashboard-primary)] text-[var(--dashboard-action-text)] shadow-glow"><Sparkles className="h-7 w-7" /></div>

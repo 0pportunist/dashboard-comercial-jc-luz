@@ -17,7 +17,7 @@ const tones = {
 
 export function MetricCard({ label, value, helper, icon: Icon, tone = 'blue' }: MetricCardProps) {
   return (
-    <article className="group min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-card transition duration-300 hover:-translate-y-0.5">
+    <article className="group min-w-0 rounded-2xl border border-slate-100 bg-white p-4 shadow-card transition-colors duration-200 hover:border-blue-200">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400">{label}</p>
