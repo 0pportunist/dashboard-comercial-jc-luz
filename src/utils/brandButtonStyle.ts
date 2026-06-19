@@ -5,6 +5,20 @@ interface BrandButtonPalette {
   border: string
   text: string
   shadow: string
+  hoverBackground?: string
+  inactive?: {
+    background: string
+    border: string
+    text: string
+  }
+}
+
+type BrandButtonStyle = CSSProperties & {
+  '--brand-button-bg'?: string
+  '--brand-button-border'?: string
+  '--brand-button-text'?: string
+  '--brand-button-hover'?: string
+  '--brand-button-shadow'?: string
 }
 
 const fallbackPalette: BrandButtonPalette = {
@@ -12,6 +26,7 @@ const fallbackPalette: BrandButtonPalette = {
   border: 'transparent',
   text: '#FFFFFF',
   shadow: '0 10px 24px rgba(8, 27, 61, 0.18)',
+  hoverBackground: '#06162F',
 }
 
 const brandPalettes: Record<string, BrandButtonPalette> = {
@@ -76,10 +91,16 @@ const brandPalettes: Record<string, BrandButtonPalette> = {
     shadow: '0 10px 24px rgba(0, 107, 63, 0.18)',
   },
   leve: {
-    background: '#006B3F',
-    border: '#B7C72C',
+    background: '#4B174F',
+    border: '#FF5A00',
     text: '#FFFFFF',
-    shadow: '0 10px 24px rgba(0, 107, 63, 0.18)',
+    shadow: '0 10px 24px rgba(75, 23, 79, 0.24)',
+    hoverBackground: '#2B0B30',
+    inactive: {
+      background: '#FBF7FC',
+      border: '#D9B8DC',
+      text: '#4B174F',
+    },
   },
   klini: {
     background: '#081B3D',
@@ -103,15 +124,21 @@ function getBrandPalette(brandName: string) {
   return key ? brandPalettes[key] : fallbackPalette
 }
 
-export function getBrandButtonStyle(brandName: string, isActive: boolean): CSSProperties | undefined {
-  if (!isActive) return undefined
-
+export function getBrandButtonStyle(brandName: string, isActive: boolean): BrandButtonStyle | undefined {
   const palette = getBrandPalette(brandName)
+  const inactivePalette = palette.inactive
+
+  if (!isActive && !inactivePalette) return undefined
+
+  const background = isActive ? palette.background : inactivePalette?.background
+  const border = isActive ? palette.border : inactivePalette?.border
+  const text = isActive ? palette.text : inactivePalette?.text
 
   return {
-    backgroundColor: palette.background,
-    borderColor: palette.border,
-    color: palette.text,
-    boxShadow: palette.shadow,
+    '--brand-button-bg': background,
+    '--brand-button-border': border,
+    '--brand-button-text': text,
+    '--brand-button-hover': isActive ? (palette.hoverBackground ?? palette.background) : background,
+    '--brand-button-shadow': isActive ? palette.shadow : 'none',
   }
 }
