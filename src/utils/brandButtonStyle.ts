@@ -6,11 +6,6 @@ interface BrandButtonPalette {
   text: string
   shadow: string
   hoverBackground?: string
-  inactive?: {
-    background: string
-    border: string
-    text: string
-  }
 }
 
 type BrandButtonStyle = CSSProperties & {
@@ -96,11 +91,6 @@ const brandPalettes: Record<string, BrandButtonPalette> = {
     text: '#FFFFFF',
     shadow: '0 10px 24px rgba(75, 23, 79, 0.24)',
     hoverBackground: '#2B0B30',
-    inactive: {
-      background: '#FBF7FC',
-      border: '#D9B8DC',
-      text: '#4B174F',
-    },
   },
   klini: {
     background: '#081B3D',
@@ -125,20 +115,15 @@ function getBrandPalette(brandName: string) {
 }
 
 export function getBrandButtonStyle(brandName: string, isActive: boolean): BrandButtonStyle | undefined {
+  if (!isActive) return undefined
+
   const palette = getBrandPalette(brandName)
-  const inactivePalette = palette.inactive
-
-  if (!isActive && !inactivePalette) return undefined
-
-  const background = isActive ? palette.background : inactivePalette?.background
-  const border = isActive ? palette.border : inactivePalette?.border
-  const text = isActive ? palette.text : inactivePalette?.text
 
   return {
-    '--brand-button-bg': background,
-    '--brand-button-border': border,
-    '--brand-button-text': text,
-    '--brand-button-hover': isActive ? (palette.hoverBackground ?? palette.background) : background,
-    '--brand-button-shadow': isActive ? palette.shadow : 'none',
+    '--brand-button-bg': palette.background,
+    '--brand-button-border': palette.border,
+    '--brand-button-text': palette.text,
+    '--brand-button-hover': palette.hoverBackground ?? palette.background,
+    '--brand-button-shadow': palette.shadow,
   }
 }

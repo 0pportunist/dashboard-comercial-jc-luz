@@ -102,7 +102,6 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
             const logo = operatorLogos[operator]
             const isSelected = selected === operator
             const activeStyle = getBrandButtonStyle(operator, isSelected)
-            const hasBrandStyle = Boolean(activeStyle)
 
             return (
               <button
@@ -117,9 +116,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
                 className={`flex h-12 min-w-[122px] shrink-0 items-center justify-center rounded-xl border px-4 transition-colors duration-200 ${
                   isSelected
                     ? 'border-[var(--brand-button-border)] bg-[var(--brand-button-bg)] text-[var(--brand-button-text)] shadow-[var(--brand-button-shadow)] hover:bg-[var(--brand-button-hover)]'
-                    : hasBrandStyle
-                      ? 'border-[var(--brand-button-border)] bg-[var(--brand-button-bg)] text-[var(--brand-button-text)] hover:bg-[var(--brand-button-hover)]'
-                      : 'border-transparent bg-slate-50 hover:bg-slate-100'
+                    : 'border-transparent bg-slate-50 hover:bg-slate-100'
                 }`}
               >
                 {logo ? (
