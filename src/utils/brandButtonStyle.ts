@@ -93,10 +93,10 @@ const brandPalettes: Record<string, BrandButtonPalette> = {
     hoverBackground: '#2B0B30',
   },
   klini: {
-    background: '#004E4C',
-    border: '#F97316',
+    background: '#2B9995',
+    border: '#102A2A',
     text: '#FFFFFF',
-    shadow: '0 10px 24px rgba(0, 107, 104, 0.24)',
+    shadow: '0 10px 24px rgba(43, 153, 149, 0.24)',
     hoverBackground: '#006B68',
   },
 }
