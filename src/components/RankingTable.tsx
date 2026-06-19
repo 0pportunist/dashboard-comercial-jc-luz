@@ -52,7 +52,7 @@ export function RankingTable({ title, subtitle, data, type }: RankingTableProps)
           </thead>
           <tbody className="divide-y divide-slate-100">
             {data.map((entry) => (
-              <tr key={entry.name} className="group text-xs transition hover:bg-blue-50/30">
+              <tr key={entry.name} className="group text-xs transition-colors duration-200 hover:bg-blue-50/30">
                 <td className="px-5 py-3.5">
                   <span className={`grid h-7 w-7 place-items-center rounded-lg font-black ${positionStyle(entry.position)}`}>
                     {entry.position}
@@ -73,6 +73,8 @@ export function RankingTable({ title, subtitle, data, type }: RankingTableProps)
                         <img
                           src={getTeamLogo(entry.team)}
                           alt={`Logo da ${entry.team}`}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-contain"
                         />
                       </span>

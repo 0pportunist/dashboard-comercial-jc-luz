@@ -21,7 +21,7 @@ export function Toast({ message, tone = 'error', onClose }: ToastProps) {
     >
       {success ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" /> : <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />}
       <p className="flex-1 text-sm font-semibold leading-5">{message}</p>
-      <button type="button" onClick={onClose} aria-label="Fechar mensagem" className="rounded-lg p-1 transition hover:bg-black/5">
+      <button type="button" onClick={onClose} aria-label="Fechar mensagem" className="rounded-lg p-1 transition-colors duration-200 hover:bg-black/5">
         <X className="h-4 w-4" />
       </button>
     </div>

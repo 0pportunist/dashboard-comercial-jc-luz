@@ -60,7 +60,7 @@ export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
             onChange={(event) => setQuery(event.target.value)}
             aria-label="Buscar equipe ou supervisor"
             placeholder="Buscar equipe ou supervisor..."
-            className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+            className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition-colors duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
           />
         </div>
       </div>
@@ -114,6 +114,8 @@ export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
                     <img
                       src={team.logo ?? getTeamLogo(team.name)}
                       alt={`Logo da ${team.name}`}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-contain"
                     />
                   </div>

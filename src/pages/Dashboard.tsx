@@ -211,7 +211,7 @@ export function Dashboard() {
                 onChange={(event) => setQuery(event.target.value)}
                 aria-label="Buscar campanha pelo nome"
                 placeholder="Buscar campanha..."
-                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition-colors duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               />
             </div>
           </div>

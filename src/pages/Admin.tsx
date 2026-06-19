@@ -180,7 +180,7 @@ function ReportImporter() {
         <p className="mt-2 text-sm leading-6 text-slate-500">
           Selecione o PDF de produção de corretores ou supervisores. O sistema identifica o tipo automaticamente.
         </p>
-        <label className="mt-6 flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/50 px-5 py-8 text-center transition hover:border-blue-400">
+        <label className="mt-6 flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/50 px-5 py-8 text-center transition-colors duration-200 hover:border-blue-400">
           {loading ? <LoaderCircle className="h-8 w-8 animate-spin text-blue-700" /> : <FileUp className="h-8 w-8 text-blue-700" />}
           <span className="mt-3 text-sm font-black text-navy-950">{loading ? 'Processando PDF...' : 'Selecionar relatório PDF'}</span>
           <span className="mt-1 text-xs text-slate-500">Relatório de Produção por Equipe</span>
@@ -306,7 +306,7 @@ function CampaignManager() {
       <div className="mt-6 grid gap-3">
         {filtered.map((campaign) => (
           <article key={campaign.id} className="flex flex-col gap-4 rounded-2xl border border-slate-100 p-4 transition-colors duration-200 hover:border-blue-200 sm:flex-row sm:items-center">
-            <img src={campaign.image} alt="" className="h-20 w-full rounded-xl object-cover sm:w-28" />
+            <img src={campaign.image} alt="" loading="lazy" decoding="async" className="h-20 w-full rounded-xl object-cover sm:w-28" />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="truncate font-black text-navy-950">{campaign.name}</h3>
@@ -438,7 +438,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
         <legend className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Operadoras</legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {operators.map((operator) => (
-            <label key={operator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition ${
+            <label key={operator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition-colors duration-200 ${
               selectedOperators.includes(operator) ? 'border-blue-600 bg-blue-50 text-blue-800' : 'border-slate-200 text-slate-500'
             }`}>
               <input
@@ -459,7 +459,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
         <p className="mb-3 text-xs text-amber-800/70">Selecione apenas quando a campanha for comercializada por uma administradora.</p>
         <div className="flex flex-wrap gap-2">
           {administrators.map((administrator) => (
-            <label key={administrator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition ${
+            <label key={administrator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition-colors duration-200 ${
               selectedAdministrators.includes(administrator)
                 ? 'border-amber-600 bg-amber-100 text-amber-900'
                 : 'border-amber-200 bg-white text-amber-800'

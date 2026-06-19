@@ -12,7 +12,7 @@ export function CampaignDetails({ campaign, onClose }: CampaignDetailsProps) {
   return (
     <aside className="sticky top-5 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-card">
       <div className={`relative min-h-52 overflow-hidden bg-gradient-to-br ${campaign.accent} p-5 text-white`}>
-        <img src={campaign.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={campaign.image} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/45 to-black/20" />
         <div className="relative flex items-start justify-between gap-4">
           <StatusBadge status={campaign.status} />

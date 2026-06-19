@@ -136,7 +136,7 @@ export function AssistantPage() {
                   key={suggestion}
                   type="button"
                   onClick={() => setQuestion(suggestion)}
-                  className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-500 transition hover:border-blue-300 hover:text-blue-700"
+                  className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold text-slate-500 transition-colors duration-200 hover:border-blue-300 hover:text-blue-700"
                 >
                   {suggestion}
                 </button>

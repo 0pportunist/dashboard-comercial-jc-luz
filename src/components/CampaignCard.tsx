@@ -41,6 +41,8 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
         <img
           src={campaign.image}
           alt={`Arte da campanha ${campaign.name}`}
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-black/15" />
@@ -87,7 +89,7 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
             <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{campaign.prizeType}</p>
             <p className="mt-0.5 max-w-[190px] truncate text-xs font-bold text-navy-950">{campaign.mainPrize}</p>
           </div>
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-50 text-blue-700 transition group-hover:bg-blue-700 group-hover:text-white">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-50 text-blue-700 transition-colors duration-200 group-hover:bg-blue-700 group-hover:text-white">
             <ArrowRight className="h-4 w-4" />
           </span>
         </div>

@@ -47,6 +47,35 @@ Abra `http://localhost:5173/login`, digite a senha definida em `VITE_ADMIN_PASSW
 
 No Windows, também é possível executar `INICIAR DASHBOARD.cmd`.
 
+## Build e deploy
+
+Antes de publicar, valide o projeto localmente:
+
+```bash
+npm install
+npm run lint
+npm run build
+npm run preview
+```
+
+O comando `npm run build` gera a pasta `dist`. Essa é a pasta de produção que deve ser enviada para a hospedagem.
+
+### Deploy na Hostinger ou hospedagem compartilhada
+
+1. Rode `npm run build`.
+2. Abra a pasta `dist`.
+3. Envie o conteúdo de `dist` para a pasta `public_html` da hospedagem.
+4. Não envie a pasta `src`, `node_modules`, arquivos `.env` ou arquivos de desenvolvimento.
+5. Depois do upload, acesse o domínio e teste `/login`, `/dashboard`, `/assistant` e `/admin`.
+
+O arquivo `public/.htaccess` é copiado automaticamente para `dist` durante o build. Ele faz o fallback das rotas SPA para `index.html`, evitando erro 404 ao recarregar páginas internas como `/dashboard` ou `/admin`.
+
+Se o site for publicado em uma subpasta, ajuste o `base` do Vite antes do build. Para publicação direta em `public_html`, mantenha o padrão atual.
+
+### Observação sobre imagens
+
+As artes em `public/campaigns` são imagens grandes e mantêm qualidade visual alta. Para melhorar ainda mais o carregamento em produção, gere versões otimizadas em WebP ou JPEG comprimido mantendo os mesmos nomes/referências, ou atualize os caminhos em `src/data/campaigns.ts` após a compressão.
+
 ### Acesso na rede local
 
 O servidor de desenvolvimento escuta em todas as interfaces de rede. Ao iniciar, o Vite e o script do Windows
