@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,7 +5,8 @@
 :root {
   font-family: Inter, "Segoe UI", sans-serif;
   color: #0f172a;
-  background: #f5f7fb;
+  background: #ffffff;
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -36,9 +35,18 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid #b7c72c;
+  outline-offset: 2px;
+}
+
 ::selection {
-  color: #081b3d;
-  background: #b9ef2f;
+  color: #003c89;
+  background: #b7c72c;
 }
 
 ::-webkit-scrollbar {
@@ -68,4 +76,592 @@ button {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+}
+
+.dashboard-theme {
+  --dashboard-page: #ffffff;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: #edf5ff;
+  --dashboard-primary: #003c89;
+  --dashboard-primary-soft: rgba(0, 60, 137, 0.08);
+  --dashboard-accent: #b7c72c;
+  --dashboard-accent-soft: rgba(183, 199, 44, 0.16);
+  --dashboard-text: #0f172a;
+  --dashboard-text-muted: #64748b;
+  --dashboard-border: #e2e8f0;
+  --dashboard-header: #003c89;
+  --dashboard-header-glow: rgba(183, 199, 44, 0.18);
+  --dashboard-action: #003c89;
+  --dashboard-action-hover: #0750ad;
+  --dashboard-action-text: #ffffff;
+  --dashboard-shadow: 0 16px 45px rgba(0, 60, 137, 0.08);
+  background: var(--dashboard-page);
+  color: var(--dashboard-text);
+}
+
+.dashboard-theme-supermed {
+  --dashboard-page: #fffaf0;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: rgba(244, 179, 33, 0.13);
+  --dashboard-primary: #f4b321;
+  --dashboard-primary-soft: rgba(244, 179, 33, 0.18);
+  --dashboard-accent: #111111;
+  --dashboard-accent-soft: rgba(17, 17, 17, 0.08);
+  --dashboard-text: #111111;
+  --dashboard-text-muted: #525252;
+  --dashboard-border: rgba(17, 17, 17, 0.12);
+  --dashboard-header: #111111;
+  --dashboard-header-glow: rgba(244, 179, 33, 0.28);
+  --dashboard-action: #f4b321;
+  --dashboard-action-hover: #dda016;
+  --dashboard-action-text: #111111;
+  --dashboard-shadow: 0 16px 45px rgba(17, 17, 17, 0.08);
+}
+
+.dashboard-theme-qualicorp {
+  --dashboard-page: #f4f8fb;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: #eaf4fa;
+  --dashboard-primary: #002f5f;
+  --dashboard-primary-soft: rgba(0, 174, 239, 0.14);
+  --dashboard-accent: #fcaf17;
+  --dashboard-accent-soft: rgba(254, 199, 20, 0.18);
+  --dashboard-text: #101828;
+  --dashboard-text-muted: #64748b;
+  --dashboard-border: #b9dcef;
+  --dashboard-border-strong: #005884;
+  --dashboard-header: #0b111d;
+  --dashboard-header-glow: rgba(0, 174, 239, 0.2);
+  --dashboard-action: #fcaf17;
+  --dashboard-action-hover: #fec714;
+  --dashboard-action-text: #1e1e1e;
+  --dashboard-secondary-action: #002f5f;
+  --dashboard-secondary-action-hover: #004071;
+  --dashboard-shadow: 0 18px 52px rgba(0, 47, 95, 0.22);
+}
+
+.dashboard-theme-allcare {
+  --dashboard-page: #fbf7ff;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: #f4eafe;
+  --dashboard-primary: #4b0f8f;
+  --dashboard-primary-soft: rgba(145, 44, 241, 0.14);
+  --dashboard-accent: #ff5a76;
+  --dashboard-accent-soft: rgba(255, 90, 118, 0.16);
+  --dashboard-text: #101828;
+  --dashboard-text-muted: #667085;
+  --dashboard-border: #dec7f8;
+  --dashboard-border-strong: #912cf1;
+  --dashboard-header: #0e0718;
+  --dashboard-header-glow: rgba(184, 51, 245, 0.22);
+  --dashboard-action: #ff5a76;
+  --dashboard-action-hover: #ff2f67;
+  --dashboard-action-text: #ffffff;
+  --dashboard-secondary-action: #4b0f8f;
+  --dashboard-secondary-action-hover: #6f1acf;
+  --dashboard-shadow: 0 18px 52px rgba(75, 15, 143, 0.24);
+}
+
+.dashboard-theme-dixmed {
+  --dashboard-page: #f8f5ff;
+  --dashboard-surface: #ffffff;
+  --dashboard-surface-muted: #efe7ff;
+  --dashboard-primary: #5b21b6;
+  --dashboard-primary-soft: rgba(91, 33, 182, 0.14);
+  --dashboard-accent: #fec514;
+  --dashboard-accent-soft: rgba(254, 197, 20, 0.18);
+  --dashboard-text: #101828;
+  --dashboard-text-muted: #667085;
+  --dashboard-border: #d8c8f5;
+  --dashboard-border-strong: #5b21b6;
+  --dashboard-header: #0b0618;
+  --dashboard-header-glow: rgba(56, 189, 248, 0.22);
+  --dashboard-action: #fec514;
+  --dashboard-action-hover: #ffb000;
+  --dashboard-action-text: #101828;
+  --dashboard-secondary-action: #5b21b6;
+  --dashboard-secondary-action-hover: #3f137a;
+  --dashboard-shadow: 0 18px 52px rgba(91, 33, 182, 0.25);
+}
+
+.dashboard-theme {
+  transition-property: background-color, color;
+  transition-duration: 180ms;
+  transition-timing-function: ease-in-out;
+}
+
+.dashboard-theme .transition {
+  transition-property: color, background-color, border-color, text-decoration-color, opacity;
+  transition-duration: 180ms;
+  transition-timing-function: ease-in-out;
+}
+
+.dashboard-theme .transition-colors {
+  transition-duration: 180ms;
+  transition-timing-function: ease-in-out;
+}
+
+.dashboard-theme .duration-300,
+.dashboard-theme .duration-500,
+.dashboard-theme .duration-700 {
+  transition-duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .dashboard-theme,
+  .dashboard-theme .transition,
+  .dashboard-theme .transition-colors,
+  .dashboard-theme .duration-300,
+  .dashboard-theme .duration-500,
+  .dashboard-theme .duration-700 {
+    transition-duration: 0ms;
+  }
+
+  .dashboard-theme .animate-ping,
+  .dashboard-theme .animate-pulse {
+    animation: none;
+  }
+}
+
+.dashboard-theme .shadow-card {
+  box-shadow: var(--dashboard-shadow);
+}
+
+.dashboard-theme-supermed .bg-white,
+.dashboard-theme-qualicorp .bg-white,
+.dashboard-theme-allcare .bg-white,
+.dashboard-theme-dixmed .bg-white {
+  background-color: var(--dashboard-surface);
+}
+
+.dashboard-theme-supermed .bg-navy-950,
+.dashboard-theme-supermed .bg-navy-900,
+.dashboard-theme-qualicorp .bg-navy-950,
+.dashboard-theme-qualicorp .bg-navy-900,
+.dashboard-theme-allcare .bg-navy-950,
+.dashboard-theme-allcare .bg-navy-900,
+.dashboard-theme-dixmed .bg-navy-950,
+.dashboard-theme-dixmed .bg-navy-900 {
+  background-color: var(--dashboard-accent);
+}
+
+.dashboard-theme-qualicorp .bg-navy-950,
+.dashboard-theme-qualicorp .bg-navy-900,
+.dashboard-theme-allcare .bg-navy-950,
+.dashboard-theme-allcare .bg-navy-900,
+.dashboard-theme-dixmed .bg-navy-950,
+.dashboard-theme-dixmed .bg-navy-900 {
+  background-color: var(--dashboard-secondary-action);
+}
+
+.dashboard-theme-supermed .hover\:bg-navy-800:hover,
+.dashboard-theme-qualicorp .hover\:bg-navy-800:hover,
+.dashboard-theme-allcare .hover\:bg-navy-800:hover,
+.dashboard-theme-dixmed .hover\:bg-navy-800:hover {
+  background-color: var(--dashboard-secondary-action-hover);
+}
+
+.dashboard-theme-supermed .text-navy-950,
+.dashboard-theme-supermed .text-navy-900,
+.dashboard-theme-supermed .text-blue-700,
+.dashboard-theme-supermed .text-blue-600,
+.dashboard-theme-qualicorp .text-navy-950,
+.dashboard-theme-qualicorp .text-navy-900,
+.dashboard-theme-qualicorp .text-blue-700,
+.dashboard-theme-qualicorp .text-blue-600,
+.dashboard-theme-allcare .text-navy-950,
+.dashboard-theme-allcare .text-navy-900,
+.dashboard-theme-allcare .text-blue-700,
+.dashboard-theme-allcare .text-blue-600,
+.dashboard-theme-dixmed .text-navy-950,
+.dashboard-theme-dixmed .text-navy-900,
+.dashboard-theme-dixmed .text-blue-700,
+.dashboard-theme-dixmed .text-blue-600 {
+  color: var(--dashboard-text);
+}
+
+.dashboard-theme-supermed .bg-blue-50,
+.dashboard-theme-supermed .bg-blue-50\/30,
+.dashboard-theme-supermed .bg-blue-50\/50,
+.dashboard-theme-supermed .bg-blue-50\/60,
+.dashboard-theme-supermed .bg-blue-50\/70,
+.dashboard-theme-supermed .bg-slate-50,
+.dashboard-theme-qualicorp .bg-blue-50,
+.dashboard-theme-qualicorp .bg-blue-50\/30,
+.dashboard-theme-qualicorp .bg-blue-50\/50,
+.dashboard-theme-qualicorp .bg-blue-50\/60,
+.dashboard-theme-qualicorp .bg-blue-50\/70,
+.dashboard-theme-qualicorp .bg-slate-50,
+.dashboard-theme-allcare .bg-blue-50,
+.dashboard-theme-allcare .bg-blue-50\/30,
+.dashboard-theme-allcare .bg-blue-50\/50,
+.dashboard-theme-allcare .bg-blue-50\/60,
+.dashboard-theme-allcare .bg-blue-50\/70,
+.dashboard-theme-allcare .bg-slate-50,
+.dashboard-theme-dixmed .bg-blue-50,
+.dashboard-theme-dixmed .bg-blue-50\/30,
+.dashboard-theme-dixmed .bg-blue-50\/50,
+.dashboard-theme-dixmed .bg-blue-50\/60,
+.dashboard-theme-dixmed .bg-blue-50\/70,
+.dashboard-theme-dixmed .bg-slate-50 {
+  background-color: var(--dashboard-surface-muted);
+}
+
+.dashboard-theme-supermed .border-blue-100,
+.dashboard-theme-supermed .border-blue-200,
+.dashboard-theme-supermed .border-blue-300,
+.dashboard-theme-supermed .border-blue-500,
+.dashboard-theme-supermed .focus\:border-blue-500:focus,
+.dashboard-theme-qualicorp .border-blue-100,
+.dashboard-theme-qualicorp .border-blue-200,
+.dashboard-theme-qualicorp .border-blue-300,
+.dashboard-theme-qualicorp .border-blue-500,
+.dashboard-theme-qualicorp .focus\:border-blue-500:focus,
+.dashboard-theme-allcare .border-blue-100,
+.dashboard-theme-allcare .border-blue-200,
+.dashboard-theme-allcare .border-blue-300,
+.dashboard-theme-allcare .border-blue-500,
+.dashboard-theme-allcare .focus\:border-blue-500:focus,
+.dashboard-theme-dixmed .border-blue-100,
+.dashboard-theme-dixmed .border-blue-200,
+.dashboard-theme-dixmed .border-blue-300,
+.dashboard-theme-dixmed .border-blue-500,
+.dashboard-theme-dixmed .focus\:border-blue-500:focus {
+  border-color: var(--dashboard-border-strong);
+}
+
+.dashboard-theme-supermed .ring-blue-500\/10,
+.dashboard-theme-supermed .focus\:ring-blue-500\/10:focus,
+.dashboard-theme-qualicorp .ring-blue-500\/10,
+.dashboard-theme-qualicorp .focus\:ring-blue-500\/10:focus,
+.dashboard-theme-allcare .ring-blue-500\/10,
+.dashboard-theme-allcare .focus\:ring-blue-500\/10:focus,
+.dashboard-theme-dixmed .ring-blue-500\/10,
+.dashboard-theme-dixmed .focus\:ring-blue-500\/10:focus {
+  --tw-ring-color: var(--dashboard-primary-soft);
+}
+
+.dashboard-theme-supermed .bg-blue-500,
+.dashboard-theme-supermed .bg-blue-600,
+.dashboard-theme-supermed .bg-blue-700,
+.dashboard-theme-supermed .hover\:bg-blue-700:hover,
+.dashboard-theme-supermed .bg-limebrand,
+.dashboard-theme-supermed .bg-goldbrand,
+.dashboard-theme-qualicorp .bg-blue-500,
+.dashboard-theme-qualicorp .bg-blue-600,
+.dashboard-theme-qualicorp .bg-blue-700,
+.dashboard-theme-qualicorp .hover\:bg-blue-700:hover,
+.dashboard-theme-allcare .bg-blue-500,
+.dashboard-theme-allcare .bg-blue-600,
+.dashboard-theme-allcare .bg-blue-700,
+.dashboard-theme-allcare .hover\:bg-blue-700:hover,
+.dashboard-theme-dixmed .bg-blue-500,
+.dashboard-theme-dixmed .bg-blue-600,
+.dashboard-theme-dixmed .bg-blue-700,
+.dashboard-theme-dixmed .hover\:bg-blue-700:hover {
+  background-color: var(--dashboard-primary);
+}
+
+.dashboard-theme-qualicorp .bg-limebrand,
+.dashboard-theme-qualicorp .bg-goldbrand,
+.dashboard-theme-allcare .bg-limebrand,
+.dashboard-theme-allcare .bg-goldbrand,
+.dashboard-theme-dixmed .bg-limebrand,
+.dashboard-theme-dixmed .bg-goldbrand {
+  background-color: var(--dashboard-accent);
+}
+
+.dashboard-theme-supermed .text-limebrand,
+.dashboard-theme-supermed .text-goldbrand,
+.dashboard-theme-supermed .text-amber-700,
+.dashboard-theme-supermed .text-amber-800,
+.dashboard-theme-supermed .text-amber-900,
+.dashboard-theme-supermed .text-amber-600,
+.dashboard-theme-qualicorp .text-limebrand,
+.dashboard-theme-qualicorp .text-goldbrand,
+.dashboard-theme-qualicorp .text-amber-700,
+.dashboard-theme-qualicorp .text-amber-800,
+.dashboard-theme-qualicorp .text-amber-900,
+.dashboard-theme-qualicorp .text-amber-600,
+.dashboard-theme-allcare .text-limebrand,
+.dashboard-theme-allcare .text-goldbrand,
+.dashboard-theme-allcare .text-amber-700,
+.dashboard-theme-allcare .text-amber-800,
+.dashboard-theme-allcare .text-amber-900,
+.dashboard-theme-allcare .text-amber-600,
+.dashboard-theme-dixmed .text-limebrand,
+.dashboard-theme-dixmed .text-goldbrand,
+.dashboard-theme-dixmed .text-amber-700,
+.dashboard-theme-dixmed .text-amber-800,
+.dashboard-theme-dixmed .text-amber-900,
+.dashboard-theme-dixmed .text-amber-600 {
+  color: var(--dashboard-accent);
+}
+
+.dashboard-theme-supermed .bg-limebrand\/15,
+.dashboard-theme-supermed .bg-amber-50,
+.dashboard-theme-supermed .bg-amber-50\/60,
+.dashboard-theme-qualicorp .bg-limebrand\/15,
+.dashboard-theme-qualicorp .bg-amber-50,
+.dashboard-theme-qualicorp .bg-amber-50\/60,
+.dashboard-theme-allcare .bg-limebrand\/15,
+.dashboard-theme-allcare .bg-amber-50,
+.dashboard-theme-allcare .bg-amber-50\/60,
+.dashboard-theme-dixmed .bg-limebrand\/15,
+.dashboard-theme-dixmed .bg-amber-50,
+.dashboard-theme-dixmed .bg-amber-50\/60 {
+  background-color: var(--dashboard-primary-soft);
+}
+
+.dashboard-theme-supermed .border-slate-100,
+.dashboard-theme-supermed .border-slate-200,
+.dashboard-theme-supermed .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dashboard-theme-qualicorp .border-slate-100,
+.dashboard-theme-qualicorp .border-slate-200,
+.dashboard-theme-qualicorp .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dashboard-theme-allcare .border-slate-100,
+.dashboard-theme-allcare .border-slate-200,
+.dashboard-theme-allcare .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dashboard-theme-dixmed .border-slate-100,
+.dashboard-theme-dixmed .border-slate-200,
+.dashboard-theme-dixmed .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--dashboard-border);
+}
+
+.dashboard-theme-supermed .dashboard-header {
+  color: #ffffff;
+}
+
+.dashboard-theme-supermed .dashboard-header .text-navy-950,
+.dashboard-theme-supermed .dashboard-header .text-navy-900,
+.dashboard-theme-supermed .dashboard-header .text-blue-700,
+.dashboard-theme-supermed .dashboard-header .text-blue-600,
+.dashboard-theme-supermed .dashboard-header .text-limebrand,
+.dashboard-theme-supermed .dashboard-header .text-goldbrand {
+  color: inherit;
+}
+
+.dashboard-theme-supermed .dashboard-header-nav,
+.dashboard-theme-supermed .dashboard-header-button,
+.dashboard-theme-supermed .dashboard-admin-pill,
+.dashboard-theme-supermed .dashboard-hero-description,
+.dashboard-theme-supermed .dashboard-report-card {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.dashboard-theme-supermed .dashboard-hero-highlight {
+  color: #ffffff;
+}
+
+.dashboard-theme-supermed .dashboard-hero-eyebrow {
+  border-color: rgba(244, 179, 33, 0.42);
+  background-color: rgba(244, 179, 33, 0.18);
+  color: #f4b321;
+}
+
+.dashboard-theme-supermed .dashboard-hero-eyebrow .bg-limebrand {
+  background-color: #f4b321;
+}
+
+.dashboard-theme-supermed .dashboard-admin-pill .bg-goldbrand {
+  background-color: #f4b321;
+  color: #111111;
+}
+
+.dashboard-theme-supermed .dashboard-admin-pill .text-limebrand,
+.dashboard-theme-supermed .dashboard-report-label {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.dashboard-theme-supermed .dashboard-report-card {
+  border-color: rgba(255, 255, 255, 0.16);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-theme-supermed .dashboard-report-card .text-limebrand {
+  color: #f4b321;
+}
+
+.dashboard-theme-qualicorp .dashboard-header {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(0, 174, 239, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 90%, rgba(252, 175, 23, 0.16), transparent 36%),
+    linear-gradient(135deg, #0b111d 0%, #071527 46%, #002f5f 100%);
+  color: #ffffff;
+}
+
+.dashboard-theme-qualicorp .dashboard-header .text-navy-950,
+.dashboard-theme-qualicorp .dashboard-header .text-navy-900,
+.dashboard-theme-qualicorp .dashboard-header .text-blue-700,
+.dashboard-theme-qualicorp .dashboard-header .text-blue-600,
+.dashboard-theme-qualicorp .dashboard-header .text-limebrand,
+.dashboard-theme-qualicorp .dashboard-header .text-goldbrand {
+  color: inherit;
+}
+
+.dashboard-theme-qualicorp .dashboard-header-nav,
+.dashboard-theme-qualicorp .dashboard-header-button,
+.dashboard-theme-qualicorp .dashboard-admin-pill,
+.dashboard-theme-qualicorp .dashboard-hero-description,
+.dashboard-theme-qualicorp .dashboard-report-card {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dashboard-theme-qualicorp .dashboard-hero-highlight {
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(0, 174, 239, 0.18);
+}
+
+.dashboard-theme-qualicorp .dashboard-hero-eyebrow {
+  border-color: rgba(252, 175, 23, 0.38);
+  background-color: rgba(252, 175, 23, 0.12);
+  color: #ffffff;
+}
+
+.dashboard-theme-qualicorp .dashboard-hero-eyebrow .bg-limebrand {
+  background-color: #fcaf17;
+}
+
+.dashboard-theme-qualicorp .dashboard-admin-pill .bg-goldbrand {
+  background-color: #fcaf17;
+  color: #1e1e1e;
+}
+
+.dashboard-theme-qualicorp .dashboard-admin-pill .text-limebrand,
+.dashboard-theme-qualicorp .dashboard-report-label {
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.dashboard-theme-qualicorp .dashboard-report-card {
+  border-color: rgba(0, 174, 239, 0.22);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+}
+
+.dashboard-theme-qualicorp .dashboard-report-card .text-limebrand {
+  color: #fcaf17;
+}
+
+.dashboard-theme-allcare .dashboard-header {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(184, 51, 245, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 90%, rgba(255, 90, 118, 0.16), transparent 36%),
+    linear-gradient(135deg, #0e0718 0%, #1a0a2e 46%, #4b0f8f 100%);
+  color: #ffffff;
+}
+
+.dashboard-theme-allcare .dashboard-header .text-navy-950,
+.dashboard-theme-allcare .dashboard-header .text-navy-900,
+.dashboard-theme-allcare .dashboard-header .text-blue-700,
+.dashboard-theme-allcare .dashboard-header .text-blue-600,
+.dashboard-theme-allcare .dashboard-header .text-limebrand,
+.dashboard-theme-allcare .dashboard-header .text-goldbrand {
+  color: inherit;
+}
+
+.dashboard-theme-allcare .dashboard-header-nav,
+.dashboard-theme-allcare .dashboard-header-button,
+.dashboard-theme-allcare .dashboard-admin-pill,
+.dashboard-theme-allcare .dashboard-hero-description,
+.dashboard-theme-allcare .dashboard-report-card {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dashboard-theme-allcare .dashboard-hero-highlight {
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(184, 51, 245, 0.22);
+}
+
+.dashboard-theme-allcare .dashboard-hero-eyebrow {
+  border-color: rgba(255, 90, 118, 0.38);
+  background-color: rgba(255, 90, 118, 0.12);
+  color: #ffffff;
+}
+
+.dashboard-theme-allcare .dashboard-hero-eyebrow .bg-limebrand {
+  background-color: #ff5a76;
+}
+
+.dashboard-theme-allcare .dashboard-admin-pill .bg-goldbrand {
+  background-color: #ff5a76;
+  color: #ffffff;
+}
+
+.dashboard-theme-allcare .dashboard-admin-pill .text-limebrand,
+.dashboard-theme-allcare .dashboard-report-label {
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.dashboard-theme-allcare .dashboard-report-card {
+  border-color: rgba(184, 51, 245, 0.24);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 48px rgba(14, 7, 24, 0.2);
+}
+
+.dashboard-theme-allcare .dashboard-report-card .text-limebrand {
+  color: #ff5a76;
+}
+
+.dashboard-theme-dixmed .dashboard-header {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 90%, rgba(254, 197, 20, 0.16), transparent 36%),
+    linear-gradient(135deg, #0b0618 0%, #1b1033 46%, #5b21b6 100%);
+  color: #ffffff;
+}
+
+.dashboard-theme-dixmed .dashboard-header .text-navy-950,
+.dashboard-theme-dixmed .dashboard-header .text-navy-900,
+.dashboard-theme-dixmed .dashboard-header .text-blue-700,
+.dashboard-theme-dixmed .dashboard-header .text-blue-600,
+.dashboard-theme-dixmed .dashboard-header .text-limebrand,
+.dashboard-theme-dixmed .dashboard-header .text-goldbrand {
+  color: inherit;
+}
+
+.dashboard-theme-dixmed .dashboard-header-nav,
+.dashboard-theme-dixmed .dashboard-header-button,
+.dashboard-theme-dixmed .dashboard-admin-pill,
+.dashboard-theme-dixmed .dashboard-hero-description,
+.dashboard-theme-dixmed .dashboard-report-card {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dashboard-theme-dixmed .dashboard-hero-highlight {
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(56, 189, 248, 0.22);
+}
+
+.dashboard-theme-dixmed .dashboard-hero-eyebrow {
+  border-color: rgba(254, 197, 20, 0.4);
+  background-color: rgba(254, 197, 20, 0.12);
+  color: #ffffff;
+}
+
+.dashboard-theme-dixmed .dashboard-hero-eyebrow .bg-limebrand {
+  background-color: #fec514;
+}
+
+.dashboard-theme-dixmed .dashboard-admin-pill .bg-goldbrand {
+  background-color: #fec514;
+  color: #101828;
+}
+
+.dashboard-theme-dixmed .dashboard-admin-pill .text-limebrand,
+.dashboard-theme-dixmed .dashboard-report-label {
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.dashboard-theme-dixmed .dashboard-report-card {
+  border-color: rgba(56, 189, 248, 0.24);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 48px rgba(11, 6, 24, 0.22);
+}
+
+.dashboard-theme-dixmed .dashboard-report-card .text-limebrand {
+  color: #38bdf8;
 }

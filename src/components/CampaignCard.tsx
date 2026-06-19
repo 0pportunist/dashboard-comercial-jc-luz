@@ -30,8 +30,10 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
 
   return (
     <button
+      type="button"
       onClick={() => onSelect(campaign)}
-      className={`group w-full overflow-hidden rounded-2xl border bg-white text-left shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
+      aria-pressed={selected}
+      className={`group w-full overflow-hidden rounded-2xl border bg-white text-left shadow-card transition-colors duration-200 ${
         selected ? 'border-blue-500 ring-2 ring-blue-500/10' : 'border-slate-100'
       }`}
     >
@@ -39,11 +41,13 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
         <img
           src={campaign.image}
           alt={`Arte da campanha ${campaign.name}`}
-          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-black/15" />
         <div className="relative flex items-start justify-between">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-navy-950/45 backdrop-blur">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-navy-950/45">
             <Icon className="h-5 w-5" />
           </div>
           <StatusBadge status={campaign.status} />
@@ -61,6 +65,16 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
           ))}
           {campaign.operators.length > 2 && <span className="rounded-md bg-slate-100 px-2 py-1 text-[9px] font-bold text-slate-500">+{campaign.operators.length - 2}</span>}
         </div>
+        {campaign.administrators && campaign.administrators.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-amber-700">Administradora</span>
+            {campaign.administrators.map((administrator) => (
+              <span key={administrator} className="rounded-md bg-amber-50 px-2 py-1 text-[9px] font-bold text-amber-800">
+                {administrator}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="mt-4">
           <div className="mb-1.5 flex justify-between text-[10px] font-bold">
             <span className="text-slate-500">Progresso principal</span>
@@ -75,7 +89,7 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
             <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{campaign.prizeType}</p>
             <p className="mt-0.5 max-w-[190px] truncate text-xs font-bold text-navy-950">{campaign.mainPrize}</p>
           </div>
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-50 text-blue-700 transition group-hover:bg-blue-700 group-hover:text-white">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-50 text-blue-700 transition-colors duration-200 group-hover:bg-blue-700 group-hover:text-white">
             <ArrowRight className="h-4 w-4" />
           </span>
         </div>

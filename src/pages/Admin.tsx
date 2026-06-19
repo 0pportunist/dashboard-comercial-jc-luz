@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useMemo, useState, type ChangeEvent, type FormEvent } from 'react'
 import {
   ArrowLeft,
   CalendarPlus,
@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { administrators } from '../data/administrators'
 import { operators } from '../data/campaigns'
 import type { Audience, Campaign, CampaignStatus, PrizeType, UnitType } from '../types'
 import type { ParsedReport } from '../utils/reportParser'
@@ -69,10 +70,10 @@ export function Admin() {
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <BrandLogo color="white" orientation="horizontal" className="w-36 sm:w-44" />
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate('/dashboard')} className="flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-xs font-bold hover:bg-white/15">
+            <button type="button" onClick={() => navigate('/dashboard')} className="flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-xs font-bold hover:bg-white/15">
               <ArrowLeft className="h-4 w-4" /> Dashboard
             </button>
-            <button onClick={logout} className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 hover:bg-white/15" aria-label="Sair">
+            <button type="button" onClick={logout} className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 hover:bg-white/15" aria-label="Sair">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
@@ -109,7 +110,7 @@ function TabButton({ active, onClick, icon: Icon, label }: {
   label: string
 }) {
   return (
-    <button onClick={onClick} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-black transition ${
+    <button type="button" onClick={onClick} aria-pressed={active} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-black transition-colors duration-200 ${
       active ? 'bg-navy-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'
     }`}>
       <Icon className="h-4 w-4" /> {label}
@@ -179,7 +180,7 @@ function ReportImporter() {
         <p className="mt-2 text-sm leading-6 text-slate-500">
           Selecione o PDF de produção de corretores ou supervisores. O sistema identifica o tipo automaticamente.
         </p>
-        <label className="mt-6 flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/50 px-5 py-8 text-center transition hover:border-blue-400">
+        <label className="mt-6 flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/50 px-5 py-8 text-center transition-colors duration-200 hover:border-blue-400">
           {loading ? <LoaderCircle className="h-8 w-8 animate-spin text-blue-700" /> : <FileUp className="h-8 w-8 text-blue-700" />}
           <span className="mt-3 text-sm font-black text-navy-950">{loading ? 'Processando PDF...' : 'Selecionar relatório PDF'}</span>
           <span className="mt-1 text-xs text-slate-500">Relatório de Produção por Equipe</span>
@@ -223,7 +224,7 @@ function ReportImporter() {
                 ))}
               </div>
             </div>
-            <button onClick={confirm} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 py-3.5 text-sm font-black text-white hover:bg-navy-800">
+            <button type="button" onClick={confirm} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 py-3.5 text-sm font-black text-white hover:bg-navy-800">
               <Save className="h-4 w-4" /> Confirmar e atualizar dashboard
             </button>
           </div>
@@ -252,11 +253,13 @@ function CampaignManager() {
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Ativa')
   const [editing, setEditing] = useState<Campaign | null>(null)
-  const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
-  const filtered = campaigns.filter((campaign) => (
-    (!normalizedQuery || campaign.name.toLocaleLowerCase('pt-BR').includes(normalizedQuery))
-    && (status === 'Todos' || campaign.status === status)
-  ))
+  const filtered = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
+    return campaigns.filter((campaign) => (
+      (!normalizedQuery || campaign.name.toLocaleLowerCase('pt-BR').includes(normalizedQuery))
+      && (status === 'Todos' || campaign.status === status)
+    ))
+  }, [campaigns, query, status])
 
   if (editing) {
     return (
@@ -282,24 +285,28 @@ function CampaignManager() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              aria-label="Buscar campanha para editar"
               placeholder="Buscar campanha..."
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-blue-500 sm:w-64"
             />
           </label>
-          <select
-            value={status}
-            onChange={(event) => setStatus(event.target.value as CampaignStatus | 'Todos')}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-600 outline-none focus:border-blue-500"
-          >
-            {['Ativa', 'Futura', 'Encerrada', 'Todos'].map((option) => <option key={option}>{option}</option>)}
-          </select>
+          <label>
+            <span className="sr-only">Filtrar campanhas por status</span>
+            <select
+              value={status}
+              onChange={(event) => setStatus(event.target.value as CampaignStatus | 'Todos')}
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-600 outline-none focus:border-blue-500"
+            >
+              {['Ativa', 'Futura', 'Encerrada', 'Todos'].map((option) => <option key={option}>{option}</option>)}
+            </select>
+          </label>
         </div>
       </div>
 
       <div className="mt-6 grid gap-3">
         {filtered.map((campaign) => (
-          <article key={campaign.id} className="flex flex-col gap-4 rounded-2xl border border-slate-100 p-4 transition hover:border-blue-200 sm:flex-row sm:items-center">
-            <img src={campaign.image} alt="" className="h-20 w-full rounded-xl object-cover sm:w-28" />
+          <article key={campaign.id} className="flex flex-col gap-4 rounded-2xl border border-slate-100 p-4 transition-colors duration-200 hover:border-blue-200 sm:flex-row sm:items-center">
+            <img src={campaign.image} alt="" loading="lazy" decoding="async" className="h-20 w-full rounded-xl object-cover sm:w-28" />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="truncate font-black text-navy-950">{campaign.name}</h3>
@@ -312,9 +319,17 @@ function CampaignManager() {
                 }`}>{campaign.status}</span>
               </div>
               <p className="mt-1 text-xs font-semibold text-slate-500">{campaign.period}</p>
-              <p className="mt-2 truncate text-xs text-slate-400">{campaign.operators.join(' • ')}</p>
+              <p className="mt-2 truncate text-xs text-slate-400">
+                Operadoras: {campaign.operators.join(' • ')}
+              </p>
+              {campaign.administrators && campaign.administrators.length > 0 && (
+                <p className="mt-1 truncate text-xs font-semibold text-amber-700">
+                  Administradoras: {campaign.administrators.join(' • ')}
+                </p>
+              )}
             </div>
             <button
+              type="button"
               onClick={() => setEditing(campaign)}
               className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-xs font-black text-white hover:bg-navy-800"
             >
@@ -341,6 +356,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
   const navigate = useNavigate()
   const [success, setSuccess] = useState('')
   const [selectedOperators, setSelectedOperators] = useState<string[]>(campaign?.operators ?? [])
+  const [selectedAdministrators, setSelectedAdministrators] = useState<string[]>(campaign?.administrators ?? [])
   const [image, setImage] = useState(campaign?.image ?? '')
   const isEditing = Boolean(campaign)
 
@@ -366,6 +382,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
       period: `${new Date(`${startDate}T12:00:00`).toLocaleDateString('pt-BR')} — ${new Date(`${endDate}T12:00:00`).toLocaleDateString('pt-BR')}`,
       endDate,
       operators: selectedOperators,
+      administrators: selectedAdministrators,
       prizeType: String(form.get('prizeType')) as PrizeType,
       audience: String(form.get('audience')) as Audience,
       mainPrize: String(form.get('mainPrize')),
@@ -391,6 +408,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
       setSuccess(`Campanha “${name}” adicionada com sucesso.`)
       event.currentTarget.reset()
       setSelectedOperators([])
+      setSelectedAdministrators([])
       setImage('')
     }
   }
@@ -420,7 +438,7 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
         <legend className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Operadoras</legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {operators.map((operator) => (
-            <label key={operator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition ${
+            <label key={operator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition-colors duration-200 ${
               selectedOperators.includes(operator) ? 'border-blue-600 bg-blue-50 text-blue-800' : 'border-slate-200 text-slate-500'
             }`}>
               <input
@@ -431,6 +449,31 @@ function CampaignForm({ campaign, onCancel, onSaved }: {
                   current.includes(operator) ? current.filter((item) => item !== operator) : [...current, operator])}
               />
               {operator}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset className="mt-5 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+        <legend className="px-2 text-xs font-extrabold uppercase tracking-wider text-amber-800">Administradoras</legend>
+        <p className="mb-3 text-xs text-amber-800/70">Selecione apenas quando a campanha for comercializada por uma administradora.</p>
+        <div className="flex flex-wrap gap-2">
+          {administrators.map((administrator) => (
+            <label key={administrator} className={`cursor-pointer rounded-xl border px-3 py-2 text-xs font-bold transition-colors duration-200 ${
+              selectedAdministrators.includes(administrator)
+                ? 'border-amber-600 bg-amber-100 text-amber-900'
+                : 'border-amber-200 bg-white text-amber-800'
+            }`}>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={selectedAdministrators.includes(administrator)}
+                onChange={() => setSelectedAdministrators((current) =>
+                  current.includes(administrator)
+                    ? current.filter((item) => item !== administrator)
+                    : [...current, administrator])}
+              />
+              {administrator}
             </label>
           ))}
         </div>

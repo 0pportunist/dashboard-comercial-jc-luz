@@ -1,0 +1,129 @@
+import type { CSSProperties } from 'react'
+
+interface BrandButtonPalette {
+  background: string
+  border: string
+  text: string
+  shadow: string
+  hoverBackground?: string
+}
+
+type BrandButtonStyle = CSSProperties & {
+  '--brand-button-bg'?: string
+  '--brand-button-border'?: string
+  '--brand-button-text'?: string
+  '--brand-button-hover'?: string
+  '--brand-button-shadow'?: string
+}
+
+const fallbackPalette: BrandButtonPalette = {
+  background: '#081B3D',
+  border: 'transparent',
+  text: '#FFFFFF',
+  shadow: '0 10px 24px rgba(8, 27, 61, 0.18)',
+  hoverBackground: '#06162F',
+}
+
+const brandPalettes: Record<string, BrandButtonPalette> = {
+  supermed: {
+    background: '#111111',
+    border: '#F4B321',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(17, 17, 17, 0.18)',
+  },
+  qualicorp: {
+    background: '#002F5F',
+    border: '#FCAF17',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(0, 47, 95, 0.2)',
+  },
+  allcare: {
+    background: '#4B0F8F',
+    border: '#FF5A76',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(75, 15, 143, 0.2)',
+  },
+  dixmed: {
+    background: '#5B21B6',
+    border: '#FEC514',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(91, 33, 182, 0.2)',
+  },
+  amil: {
+    background: '#5B21B6',
+    border: '#8B5CF6',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(91, 33, 182, 0.18)',
+  },
+  assim: {
+    background: '#002B5C',
+    border: '#38BDF8',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(0, 43, 92, 0.18)',
+  },
+  bradesco: {
+    background: '#8F001B',
+    border: '#EF4444',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(143, 0, 27, 0.18)',
+  },
+  sulamerica: {
+    background: '#1D3B78',
+    border: '#F97316',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(29, 59, 120, 0.18)',
+  },
+  porto: {
+    background: '#003F7D',
+    border: '#38BDF8',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(0, 63, 125, 0.18)',
+  },
+  medsenior: {
+    background: '#006B3F',
+    border: '#86EFAC',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(0, 107, 63, 0.18)',
+  },
+  leve: {
+    background: '#4B174F',
+    border: '#FF5A00',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(75, 23, 79, 0.24)',
+    hoverBackground: '#2B0B30',
+  },
+  klini: {
+    background: '#2B9995',
+    border: '#102A2A',
+    text: '#FFFFFF',
+    shadow: '0 10px 24px rgba(43, 153, 149, 0.24)',
+    hoverBackground: '#006B68',
+  },
+}
+
+function normalizeBrandName(brandName: string) {
+  return brandName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR')
+    .replace(/[^a-z0-9]+/g, '')
+}
+
+function getBrandPalette(brandName: string) {
+  const normalized = normalizeBrandName(brandName)
+  const key = Object.keys(brandPalettes).find((brandKey) => normalized.includes(brandKey))
+  return key ? brandPalettes[key] : fallbackPalette
+}
+
+export function getBrandButtonStyle(brandName: string, isActive: boolean): BrandButtonStyle | undefined {
+  if (!isActive) return undefined
+
+  const palette = getBrandPalette(brandName)
+  return {
+    '--brand-button-bg': palette.background,
+    '--brand-button-border': palette.border,
+    '--brand-button-text': palette.text,
+    '--brand-button-hover': palette.hoverBackground ?? palette.background,
+    '--brand-button-shadow': palette.shadow,
+  }
+}

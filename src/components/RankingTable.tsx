@@ -1,4 +1,4 @@
-import { ArrowUpRight, Medal } from 'lucide-react'
+import { Medal } from 'lucide-react'
 import type { RankingEntry } from '../types'
 import { getTeamLogo } from '../utils/getTeamLogo'
 
@@ -33,9 +33,9 @@ export function RankingTable({ title, subtitle, data, type }: RankingTableProps)
           </div>
           <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
         </div>
-        <button className="flex items-center gap-1 text-xs font-bold text-blue-700">
-          Ver ranking <ArrowUpRight className="h-3.5 w-3.5" />
-        </button>
+        <span className="text-xs font-bold text-blue-700" aria-hidden="true">
+          Ver ranking
+        </span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[760px] text-left">
@@ -52,7 +52,7 @@ export function RankingTable({ title, subtitle, data, type }: RankingTableProps)
           </thead>
           <tbody className="divide-y divide-slate-100">
             {data.map((entry) => (
-              <tr key={entry.name} className="group text-xs transition hover:bg-blue-50/30">
+              <tr key={entry.name} className="group text-xs transition-colors duration-200 hover:bg-blue-50/30">
                 <td className="px-5 py-3.5">
                   <span className={`grid h-7 w-7 place-items-center rounded-lg font-black ${positionStyle(entry.position)}`}>
                     {entry.position}
@@ -73,6 +73,8 @@ export function RankingTable({ title, subtitle, data, type }: RankingTableProps)
                         <img
                           src={getTeamLogo(entry.team)}
                           alt={`Logo da ${entry.team}`}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-contain"
                         />
                       </span>

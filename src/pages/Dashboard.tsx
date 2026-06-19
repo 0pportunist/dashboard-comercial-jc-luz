@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { CampaignCard } from '../components/CampaignCard'
 import { CampaignDetails } from '../components/CampaignDetails'
+import { AdministratorFilters } from '../components/AdministratorFilters'
 import { DashboardHeader } from '../components/DashboardHeader'
 import { MetricCard } from '../components/MetricCard'
 import { OperatorFilters } from '../components/OperatorFilters'
@@ -27,7 +28,12 @@ import { RealtimeSalesButton } from '../components/RealtimeSalesButton'
 import { TeamsSection } from '../components/TeamsSection'
 import { useAuth } from '../contexts/AuthContext'
 import { useDashboardData } from '../contexts/DataContext'
+import { administrators } from '../data/administrators'
+import { operators as operatorCatalog } from '../data/campaigns'
+import { useFilteredCampaigns } from '../hooks/useFilteredCampaigns'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
+import { resolveDashboardTheme } from '../utils/dashboardTheme'
 
 const statusOptions: Array<CampaignStatus | 'Todos'> = ['Todos', 'Ativa', 'Futura', 'Encerrada']
 const prizeOptions: Array<PrizeType | 'Todos'> = ['Todos', 'Viagem', 'Experiência', 'Produto', 'Dinheiro']
@@ -44,47 +50,67 @@ export function Dashboard() {
   const { campaigns, brokerRankings, productionReport, salesTeams, supervisorRankings } = useDashboardData()
   const navigate = useNavigate()
   const [selectedOperator, setSelectedOperator] = useState('Todas')
+  const [selectedAdministrator, setSelectedAdministrator] = useState('Todas')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CampaignStatus | 'Todos'>('Todos')
   const [prizeType, setPrizeType] = useState<PrizeType | 'Todos'>('Todos')
   const [audience, setAudience] = useState<Audience | 'Todos'>('Todos')
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
   const [realtimeModal, setRealtimeModal] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
   const overviewRef = useRef<HTMLElement>(null)
   const rankingsRef = useRef<HTMLElement>(null)
   const teamsRef = useRef<HTMLDivElement>(null)
   const campaignsRef = useRef<HTMLElement>(null)
 
-  const visibleOperators = [...new Set(campaigns.flatMap((campaign) => campaign.operators))]
-  const activeCampaigns = campaigns.filter((campaign) => campaign.status === 'Ativa')
-  const futureCampaigns = campaigns.filter((campaign) => campaign.status === 'Futura')
-  const endedCampaigns = campaigns.filter((campaign) => campaign.status === 'Encerrada')
-  const closestEnding = [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0]
+  const visibleOperators = useMemo(
+    () => [...new Set([...operatorCatalog, ...campaigns.flatMap((campaign) => campaign.operators)])],
+    [campaigns],
+  )
+  const activeCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.status === 'Ativa'),
+    [campaigns],
+  )
+  const futureCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.status === 'Futura'),
+    [campaigns],
+  )
+  const endedCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.status === 'Encerrada'),
+    [campaigns],
+  )
+  const closestEnding = useMemo(
+    () => [...activeCampaigns].sort((a, b) => a.endDate.localeCompare(b.endDate))[0],
+    [activeCampaigns],
+  )
+  const dashboardTheme = useMemo(
+    () => resolveDashboardTheme(selectedAdministrator, selectedOperator),
+    [selectedAdministrator, selectedOperator],
+  )
+  const dashboardThemeClass = dashboardTheme === 'default' ? '' : `dashboard-theme-${dashboardTheme}`
 
-  const filteredCampaigns = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
-    return campaigns.filter((campaign) => {
-      const matchesQuery = !normalizedQuery || campaign.name.toLocaleLowerCase('pt-BR').includes(normalizedQuery)
-      const matchesOperator = selectedOperator === 'Todas' || campaign.operators.includes(selectedOperator)
-      const matchesStatus = status === 'Todos' || campaign.status === status
-      const matchesPrize = prizeType === 'Todos' || campaign.prizeType === prizeType
-      const matchesAudience = audience === 'Todos' || campaign.audience === audience || campaign.audience === 'Todos'
-      return matchesQuery && matchesOperator && matchesStatus && matchesPrize && matchesAudience
-    })
-  }, [audience, campaigns, prizeType, query, selectedOperator, status])
+  const filteredCampaigns = useFilteredCampaigns(campaigns, {
+    query,
+    operator: selectedOperator,
+    administrator: selectedAdministrator,
+    status,
+    prizeType,
+    audience,
+  })
 
   useEffect(() => {
-    if (!selectedCampaign || !campaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
-      setSelectedCampaign(campaigns[0] ?? null)
+    if (!selectedCampaign || !filteredCampaigns.some((campaign) => campaign.id === selectedCampaign.id)) {
+      setSelectedCampaign(filteredCampaigns[0] ?? null)
     }
-  }, [campaigns, selectedCampaign])
+  }, [filteredCampaigns, selectedCampaign])
 
   const scrollTo = (ref: RefObject<HTMLElement | HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    ref.current?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
   }
 
   const clearFilters = () => {
     setSelectedOperator('Todas')
+    setSelectedAdministrator('Todas')
     setQuery('')
     setStatus('Todos')
     setPrizeType('Todos')
@@ -92,7 +118,10 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb] text-slate-800">
+    <div
+      data-theme={dashboardTheme}
+      className={`dashboard-theme min-h-screen text-slate-800 ${dashboardThemeClass}`}
+    >
       <DashboardHeader
         onOverviewClick={() => scrollTo(overviewRef)}
         onCampaignsClick={() => scrollTo(campaignsRef)}
@@ -117,7 +146,14 @@ export function Dashboard() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-3 lg:flex-row">
+        <div>
+          <AdministratorFilters
+            administrators={administrators}
+            selected={selectedAdministrator}
+            onChange={setSelectedAdministrator}
+          />
+        </div>
+        <section className="mt-3 flex flex-col gap-3 lg:flex-row">
           <div className="min-w-0 flex-1">
             <OperatorFilters operators={visibleOperators} selected={selectedOperator} onChange={setSelectedOperator} />
           </div>
@@ -133,8 +169,9 @@ export function Dashboard() {
               <h2 className="mt-1 text-2xl font-black tracking-tight text-navy-950">Ranking comercial</h2>
             </div>
             <button
+              type="button"
               onClick={() => scrollTo(campaignsRef)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-3 text-xs font-bold text-white transition hover:bg-navy-800"
+              className="flex items-center justify-center gap-2 rounded-xl bg-[var(--dashboard-action)] px-4 py-3 text-xs font-bold text-[var(--dashboard-action-text)] transition-colors duration-200 hover:bg-[var(--dashboard-action-hover)]"
             >
               Ver Campanhas Ativas <ArrowRight className="h-4 w-4" />
             </button>
@@ -172,8 +209,9 @@ export function Dashboard() {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
+                aria-label="Buscar campanha pelo nome"
                 placeholder="Buscar campanha..."
-                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition-colors duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               />
             </div>
           </div>
@@ -267,21 +305,49 @@ function EmptyState({ onClear }: { onClear: () => void }) {
       <div>
         <Search className="mx-auto h-8 w-8 text-slate-300" />
         <h3 className="mt-3 font-black text-navy-950">Nenhuma campanha encontrada</h3>
-        <button onClick={onClear} className="mt-4 rounded-xl bg-navy-900 px-4 py-2.5 text-xs font-bold text-white">Limpar filtros</button>
+        <button type="button" onClick={onClear} className="mt-4 rounded-xl bg-[var(--dashboard-action)] px-4 py-2.5 text-xs font-bold text-[var(--dashboard-action-text)]">Limpar filtros</button>
       </div>
     </div>
   )
 }
 
 function RealtimeModal({ onClose }: { onClose: () => void }) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-navy-950/70 p-4 backdrop-blur-sm" onMouseDown={onClose}>
-      <div className="relative w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
-        <button onClick={onClose} className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"><X className="h-4 w-4" /></button>
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-limebrand text-navy-950 shadow-glow"><Sparkles className="h-7 w-7" /></div>
-        <h2 className="mt-5 text-xl font-black text-navy-950">Vendas em tempo real</h2>
-        <p className="mt-3 text-sm leading-6 text-slate-600">Funcionalidade em desenvolvimento. Em breve este painel será integrado às vendas em tempo real.</p>
-        <button onClick={onClose} className="mt-6 w-full rounded-xl bg-navy-900 py-3 text-sm font-black text-white">Entendido</button>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-navy-950/70 p-4" onMouseDown={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="realtime-sales-title"
+        aria-describedby="realtime-sales-description"
+        className="relative w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <button
+          ref={closeButtonRef}
+          type="button"
+          onClick={onClose}
+          aria-label="Fechar aviso de vendas em tempo real"
+          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[var(--dashboard-primary)] text-[var(--dashboard-action-text)] shadow-glow"><Sparkles className="h-7 w-7" /></div>
+        <h2 id="realtime-sales-title" className="mt-5 text-xl font-black text-navy-950">Vendas em tempo real</h2>
+        <p id="realtime-sales-description" className="mt-3 text-sm leading-6 text-slate-600">Funcionalidade em desenvolvimento. Em breve este painel será integrado às vendas em tempo real.</p>
+        <button type="button" onClick={onClose} className="mt-6 w-full rounded-xl bg-[var(--dashboard-action)] py-3 text-sm font-black text-[var(--dashboard-action-text)]">Entendido</button>
       </div>
     </div>
   )

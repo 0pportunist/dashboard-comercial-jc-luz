@@ -8,6 +8,7 @@ export const operators = [
   'Porto Saúde',
   'MedSênior',
   'Leve Saúde',
+  'Klini',
 ]
 
 export const campaigns: Campaign[] = [

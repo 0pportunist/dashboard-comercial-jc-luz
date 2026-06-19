@@ -6,7 +6,7 @@ import { DataProvider } from './contexts/DataContext'
 import { Admin } from './pages/Admin'
 import { AssistantPage } from './pages/AssistantPage'
 import { Dashboard } from './pages/Dashboard'
-import { Login } from './pages/Login'
+import { LoginPage } from './pages/Login'
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
       <DataProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/assistant" element={<AssistantPage />} />

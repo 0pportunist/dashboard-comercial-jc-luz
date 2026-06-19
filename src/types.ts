@@ -17,6 +17,7 @@ export interface Campaign {
   period: string
   endDate: string
   operators: string[]
+  administrators?: string[]
   prizeType: PrizeType
   audience: Audience
   mainPrize: string

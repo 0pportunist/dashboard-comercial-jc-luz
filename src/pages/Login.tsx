@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
+import { Toast } from '../components/Toast'
 import { useAuth } from '../contexts/AuthContext'
 
 interface LocationState {
@@ -10,7 +11,7 @@ interface LocationState {
   }
 }
 
-export function Login() {
+export function LoginPage() {
   const { isAuthenticated, isConfigured, login } = useAuth()
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -37,7 +38,8 @@ export function Login() {
 
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-navy-950 px-4 py-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(41,121,255,0.24),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(185,239,47,0.16),transparent_35%)]" />
+      {error && <Toast message={error} onClose={() => setError('')} />}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.18),transparent_35%),radial-gradient(circle_at_85%_80%,rgba(183,199,44,0.2),transparent_35%)]" />
       <section className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl">
         <div className="bg-navy-900 px-7 py-8 text-white">
           <div>
@@ -75,29 +77,23 @@ export function Login() {
                 autoFocus
                 required
                 placeholder="Digite a senha administrativa"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-4 pr-12 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-4 pr-12 text-sm font-semibold outline-none transition-colors duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((current) => !current)}
                 aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-navy-900"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors duration-200 hover:text-navy-900"
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </span>
           </label>
 
-          {error && (
-            <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-xs font-semibold leading-5 text-red-700">
-              {error}
-            </p>
-          )}
-
           <button
             type="submit"
             disabled={!password}
-            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-navy-900 px-4 py-3.5 text-sm font-black text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-navy-900 px-4 py-3.5 text-sm font-black text-white transition-colors duration-200 hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <LockKeyhole className="h-5 w-5" />
             Entrar

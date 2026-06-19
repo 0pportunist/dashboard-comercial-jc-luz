@@ -12,11 +12,11 @@ export function CampaignDetails({ campaign, onClose }: CampaignDetailsProps) {
   return (
     <aside className="sticky top-5 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-card">
       <div className={`relative min-h-52 overflow-hidden bg-gradient-to-br ${campaign.accent} p-5 text-white`}>
-        <img src={campaign.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={campaign.image} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/45 to-black/20" />
         <div className="relative flex items-start justify-between gap-4">
           <StatusBadge status={campaign.status} />
-          <button onClick={onClose} aria-label="Fechar detalhes" className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 transition hover:bg-white/25">
+          <button type="button" onClick={onClose} aria-label="Fechar detalhes" className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 transition-colors duration-200 hover:bg-white/25">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -28,6 +28,19 @@ export function CampaignDetails({ campaign, onClose }: CampaignDetailsProps) {
       </div>
       <div className="max-h-[680px] overflow-y-auto p-5">
         <p className="text-sm leading-6 text-slate-600">{campaign.description}</p>
+
+        <div className="mt-5 space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-3">
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Operadoras</p>
+            <p className="mt-1 text-xs font-bold text-navy-950">{campaign.operators.join(' • ')}</p>
+          </div>
+          {campaign.administrators && campaign.administrators.length > 0 && (
+            <div className="border-t border-amber-200 pt-2">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-amber-700">Administradoras</p>
+              <p className="mt-1 text-xs font-bold text-amber-900">{campaign.administrators.join(' • ')}</p>
+            </div>
+          )}
+        </div>
 
         <div className="mt-5 grid grid-cols-2 gap-2">
           <div className="rounded-xl bg-slate-50 p-3">

@@ -29,6 +29,13 @@ O estado de autenticação fica somente na memória do React. Ele não usa `loca
 
 > Este mecanismo serve como controle simples para a primeira versão em ambiente interno. Variáveis `VITE_*` são incluídas no JavaScript entregue ao navegador e não protegem uma aplicação publicada na internet. Para produção pública, use autenticação e validação no servidor.
 
+### Segurança
+
+- Nunca versione o arquivo `.env` nem compartilhe a senha administrativa em commits, mensagens ou capturas de tela.
+- A senha atual é adequada somente para ambiente local ou rede interna controlada. Em produção, migre para autenticação no servidor com hash de senha, tokens de sessão e controle de papéis.
+- O chat sanitiza entradas e respostas com DOMPurify. Caso HTML seja renderizado no futuro, use apenas conteúdo retornado por `sanitizeHtml` antes de chamar `dangerouslySetInnerHTML`.
+- Execute `npm audit` regularmente e mantenha Vite e suas dependências atualizados.
+
 ## Executar
 
 ```bash
@@ -39,6 +46,35 @@ npm run dev
 Abra `http://localhost:5173/login`, digite a senha definida em `VITE_ADMIN_PASSWORD` e clique em **Entrar**.
 
 No Windows, também é possível executar `INICIAR DASHBOARD.cmd`.
+
+## Build e deploy
+
+Antes de publicar, valide o projeto localmente:
+
+```bash
+npm install
+npm run lint
+npm run build
+npm run preview
+```
+
+O comando `npm run build` gera a pasta `dist`. Essa é a pasta de produção que deve ser enviada para a hospedagem.
+
+### Deploy na Hostinger ou hospedagem compartilhada
+
+1. Rode `npm run build`.
+2. Abra a pasta `dist`.
+3. Envie o conteúdo de `dist` para a pasta `public_html` da hospedagem.
+4. Não envie a pasta `src`, `node_modules`, arquivos `.env` ou arquivos de desenvolvimento.
+5. Depois do upload, acesse o domínio e teste `/login`, `/dashboard`, `/assistant` e `/admin`.
+
+O arquivo `public/.htaccess` é copiado automaticamente para `dist` durante o build. Ele faz o fallback das rotas SPA para `index.html`, evitando erro 404 ao recarregar páginas internas como `/dashboard` ou `/admin`.
+
+Se o site for publicado em uma subpasta, ajuste o `base` do Vite antes do build. Para publicação direta em `public_html`, mantenha o padrão atual.
+
+### Observação sobre imagens
+
+As artes em `public/campaigns` são imagens grandes e mantêm qualidade visual alta. Para melhorar ainda mais o carregamento em produção, gere versões otimizadas em WebP ou JPEG comprimido mantendo os mesmos nomes/referências, ou atualize os caminhos em `src/data/campaigns.ts` após a compressão.
 
 ### Acesso na rede local
 
