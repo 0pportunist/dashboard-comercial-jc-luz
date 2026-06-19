@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { ArrowLeft, Bot, LogOut, Send, Sparkles, UserRound } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { BrandLogo } from '../components/BrandLogo'
@@ -28,7 +28,11 @@ export function AssistantPage() {
   const navigate = useNavigate()
   const { logout } = useAuth()
   const { campaigns, brokerRankings, supervisorRankings, salesTeams } = useDashboardData()
-  const topOperators = useTopOperators([...brokerRankings, ...supervisorRankings])
+  const combinedRankings = useMemo(
+    () => [...brokerRankings, ...supervisorRankings],
+    [brokerRankings, supervisorRankings],
+  )
+  const topOperators = useTopOperators(combinedRankings)
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -61,10 +65,10 @@ export function AssistantPage() {
         <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <BrandLogo color="white" orientation="horizontal" className="w-36 sm:w-44" />
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate('/dashboard')} className="flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-xs font-bold hover:bg-white/15">
+            <button type="button" onClick={() => navigate('/dashboard')} className="flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-xs font-bold hover:bg-white/15">
               <ArrowLeft className="h-4 w-4" /> Dashboard
             </button>
-            <button onClick={logout} className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 hover:bg-white/15" aria-label="Sair">
+            <button type="button" onClick={logout} className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 hover:bg-white/15" aria-label="Sair">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
@@ -95,7 +99,12 @@ export function AssistantPage() {
             </div>
           </div>
 
-          <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/60 p-4 sm:p-6">
+          <div
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+            className="flex-1 space-y-4 overflow-y-auto bg-slate-50/60 p-4 sm:p-6"
+          >
             {messages.map((message) => (
               <div key={message.id} className={`flex gap-2.5 ${message.author === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {message.author === 'assistant' && (
@@ -144,13 +153,14 @@ export function AssistantPage() {
                   }
                 }}
                 rows={1}
+                aria-label="Digite sua pergunta para o assistente"
                 placeholder="Pergunte sobre campanhas ou peça uma rota de vendas..."
                 className="max-h-32 min-h-11 flex-1 resize-none bg-transparent px-3 py-3 text-sm outline-none placeholder:text-slate-400"
               />
               <button
                 type="submit"
                 disabled={!question.trim()}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy-900 text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy-900 text-white transition-colors duration-200 hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-40"
                 aria-label="Enviar pergunta"
               >
                 <Send className="h-4 w-4" />

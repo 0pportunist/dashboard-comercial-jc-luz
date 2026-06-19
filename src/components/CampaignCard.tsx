@@ -30,7 +30,9 @@ export function CampaignCard({ campaign, selected, onSelect }: CampaignCardProps
 
   return (
     <button
+      type="button"
       onClick={() => onSelect(campaign)}
+      aria-pressed={selected}
       className={`group w-full overflow-hidden rounded-2xl border bg-white text-left shadow-card transition-colors duration-200 ${
         selected ? 'border-blue-500 ring-2 ring-blue-500/10' : 'border-slate-100'
       }`}

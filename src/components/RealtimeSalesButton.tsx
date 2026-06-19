@@ -7,6 +7,7 @@ interface RealtimeSalesButtonProps {
 export function RealtimeSalesButton({ onClick }: RealtimeSalesButtonProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[var(--dashboard-action)] px-5 py-4 text-sm font-black text-[var(--dashboard-action-text)] shadow-glow transition-colors duration-200 hover:bg-[var(--dashboard-action-hover)]"
     >

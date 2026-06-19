@@ -24,7 +24,7 @@ export function AdministratorFilters({
             type="button"
             onClick={() => onChange('Todas')}
             aria-pressed={selected === 'Todas'}
-            className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition ${
+            className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-colors duration-200 ${
               selected === 'Todas'
                 ? 'bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] shadow-sm'
                 : 'border border-slate-200 bg-slate-50 text-slate-600 hover:border-blue-200 hover:bg-blue-50'
@@ -45,7 +45,7 @@ export function AdministratorFilters({
                 aria-label={`Filtrar campanhas da administradora ${administrator}`}
                 aria-pressed={isSelected}
                 title={administrator}
-                className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border px-4 transition ${
+                className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border px-4 transition-colors duration-200 ${
                   isSelected
                     ? 'border-[var(--dashboard-accent)] bg-[var(--dashboard-accent)] shadow-md'
                     : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
@@ -55,7 +55,7 @@ export function AdministratorFilters({
                   <img
                     src={logo.src}
                     alt=""
-                    className={`h-auto w-auto object-contain transition ${logo.imageClassName ?? 'max-h-8 max-w-[116px]'} ${
+                    className={`h-auto w-auto object-contain ${logo.imageClassName ?? 'max-h-8 max-w-[116px]'} ${
                       isSelected ? 'brightness-0 invert' : ''
                     }`}
                   />

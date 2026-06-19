@@ -16,7 +16,7 @@ export function CampaignDetails({ campaign, onClose }: CampaignDetailsProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/45 to-black/20" />
         <div className="relative flex items-start justify-between gap-4">
           <StatusBadge status={campaign.status} />
-          <button onClick={onClose} aria-label="Fechar detalhes" className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 transition hover:bg-white/25">
+          <button type="button" onClick={onClose} aria-label="Fechar detalhes" className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 transition-colors duration-200 hover:bg-white/25">
             <X className="h-4 w-4" />
           </button>
         </div>

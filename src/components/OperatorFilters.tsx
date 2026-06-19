@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Building2, ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react'
 import { operatorLogos } from '../data/operatorLogos'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 interface OperatorFiltersProps {
   operators: string[]
@@ -10,6 +11,7 @@ interface OperatorFiltersProps {
 
 export function OperatorFilters({ operators, selected, onChange }: OperatorFiltersProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
   const operatorKey = operators.join('|')
@@ -65,7 +67,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
 
     container.scrollTo({
       left: target ?? (direction === 'right' ? container.scrollWidth : 0),
-      behavior: 'smooth',
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
     })
   }
 
@@ -85,7 +87,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
             type="button"
             onClick={() => onChange('Todas')}
             aria-pressed={selected === 'Todas'}
-            className={`flex h-12 min-w-[96px] shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-xs font-bold transition ${
+            className={`flex h-12 min-w-[96px] shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-xs font-bold transition-colors duration-200 ${
               selected === 'Todas'
                 ? 'bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] shadow-md'
                 : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
@@ -108,7 +110,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
                 aria-label={`Filtrar campanhas da ${operator}`}
                 aria-pressed={isSelected}
                 title={operator}
-                className={`flex h-12 min-w-[122px] shrink-0 items-center justify-center rounded-xl px-4 transition ${
+                className={`flex h-12 min-w-[122px] shrink-0 items-center justify-center rounded-xl px-4 transition-colors duration-200 ${
                   isSelected
                     ? 'bg-[var(--dashboard-accent)] shadow-md'
                     : 'bg-slate-50 hover:bg-slate-100'
@@ -118,7 +120,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
                   <img
                     src={logo.src}
                     alt=""
-                    className={`h-auto w-auto object-contain transition ${logo.imageClassName ?? 'max-h-7 max-w-[104px]'} ${
+                    className={`h-auto w-auto object-contain ${logo.imageClassName ?? 'max-h-7 max-w-[104px]'} ${
                       isSelected ? 'brightness-0 invert' : ''
                     }`}
                   />
@@ -140,7 +142,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
           disabled={!canScrollLeft}
           aria-label="Ver operadoras anteriores"
           title="Operadoras anteriores"
-          className="flex h-10 w-9 items-center justify-center rounded-lg bg-slate-100 text-navy-900 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-slate-100"
+          className="flex h-10 w-9 items-center justify-center rounded-lg bg-slate-100 text-navy-900 transition-colors duration-200 hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-slate-100"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -150,7 +152,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
           disabled={!canScrollRight}
           aria-label="Ver próximas operadoras"
           title="Próximas operadoras"
-          className="flex h-10 w-9 items-center justify-center rounded-lg bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] transition hover:bg-[var(--dashboard-action-hover)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+          className="flex h-10 w-9 items-center justify-center rounded-lg bg-[var(--dashboard-action)] text-[var(--dashboard-action-text)] transition-colors duration-200 hover:bg-[var(--dashboard-action-hover)] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
         >
           <ChevronRight className="h-5 w-5" />
         </button>

@@ -31,6 +31,7 @@ import { useDashboardData } from '../contexts/DataContext'
 import { administrators } from '../data/administrators'
 import { operators as operatorCatalog } from '../data/campaigns'
 import { useFilteredCampaigns } from '../hooks/useFilteredCampaigns'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import type { Audience, Campaign, CampaignStatus, PrizeType, ProductionReport as ProductionReportType } from '../types'
 import { resolveDashboardTheme } from '../utils/dashboardTheme'
 
@@ -56,6 +57,7 @@ export function Dashboard() {
   const [audience, setAudience] = useState<Audience | 'Todos'>('Todos')
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
   const [realtimeModal, setRealtimeModal] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
   const overviewRef = useRef<HTMLElement>(null)
   const rankingsRef = useRef<HTMLElement>(null)
   const teamsRef = useRef<HTMLDivElement>(null)
@@ -103,7 +105,7 @@ export function Dashboard() {
   }, [filteredCampaigns, selectedCampaign])
 
   const scrollTo = (ref: RefObject<HTMLElement | HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    ref.current?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
   }
 
   const clearFilters = () => {
@@ -167,8 +169,9 @@ export function Dashboard() {
               <h2 className="mt-1 text-2xl font-black tracking-tight text-navy-950">Ranking comercial</h2>
             </div>
             <button
+              type="button"
               onClick={() => scrollTo(campaignsRef)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-[var(--dashboard-action)] px-4 py-3 text-xs font-bold text-[var(--dashboard-action-text)] transition hover:bg-[var(--dashboard-action-hover)]"
+              className="flex items-center justify-center gap-2 rounded-xl bg-[var(--dashboard-action)] px-4 py-3 text-xs font-bold text-[var(--dashboard-action-text)] transition-colors duration-200 hover:bg-[var(--dashboard-action-hover)]"
             >
               Ver Campanhas Ativas <ArrowRight className="h-4 w-4" />
             </button>
@@ -206,6 +209,7 @@ export function Dashboard() {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
+                aria-label="Buscar campanha pelo nome"
                 placeholder="Buscar campanha..."
                 className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               />
@@ -301,21 +305,49 @@ function EmptyState({ onClear }: { onClear: () => void }) {
       <div>
         <Search className="mx-auto h-8 w-8 text-slate-300" />
         <h3 className="mt-3 font-black text-navy-950">Nenhuma campanha encontrada</h3>
-        <button onClick={onClear} className="mt-4 rounded-xl bg-[var(--dashboard-action)] px-4 py-2.5 text-xs font-bold text-[var(--dashboard-action-text)]">Limpar filtros</button>
+        <button type="button" onClick={onClear} className="mt-4 rounded-xl bg-[var(--dashboard-action)] px-4 py-2.5 text-xs font-bold text-[var(--dashboard-action-text)]">Limpar filtros</button>
       </div>
     </div>
   )
 }
 
 function RealtimeModal({ onClose }: { onClose: () => void }) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-navy-950/70 p-4" onMouseDown={onClose}>
-      <div className="relative w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
-        <button onClick={onClose} className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"><X className="h-4 w-4" /></button>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="realtime-sales-title"
+        aria-describedby="realtime-sales-description"
+        className="relative w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <button
+          ref={closeButtonRef}
+          type="button"
+          onClick={onClose}
+          aria-label="Fechar aviso de vendas em tempo real"
+          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"
+        >
+          <X className="h-4 w-4" />
+        </button>
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[var(--dashboard-primary)] text-[var(--dashboard-action-text)] shadow-glow"><Sparkles className="h-7 w-7" /></div>
-        <h2 className="mt-5 text-xl font-black text-navy-950">Vendas em tempo real</h2>
-        <p className="mt-3 text-sm leading-6 text-slate-600">Funcionalidade em desenvolvimento. Em breve este painel será integrado às vendas em tempo real.</p>
-        <button onClick={onClose} className="mt-6 w-full rounded-xl bg-[var(--dashboard-action)] py-3 text-sm font-black text-[var(--dashboard-action-text)]">Entendido</button>
+        <h2 id="realtime-sales-title" className="mt-5 text-xl font-black text-navy-950">Vendas em tempo real</h2>
+        <p id="realtime-sales-description" className="mt-3 text-sm leading-6 text-slate-600">Funcionalidade em desenvolvimento. Em breve este painel será integrado às vendas em tempo real.</p>
+        <button type="button" onClick={onClose} className="mt-6 w-full rounded-xl bg-[var(--dashboard-action)] py-3 text-sm font-black text-[var(--dashboard-action-text)]">Entendido</button>
       </div>
     </div>
   )

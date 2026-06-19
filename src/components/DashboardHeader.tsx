@@ -28,30 +28,32 @@ export function DashboardHeader({
     <header className="dashboard-header relative overflow-hidden bg-[var(--dashboard-header)] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,var(--dashboard-header-glow),transparent_32%),radial-gradient(circle_at_20%_100%,rgba(255,255,255,0.18),transparent_38%)]" />
       <div className="relative mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-between">
+        <nav className="flex items-center justify-between" aria-label="Navegação principal do dashboard">
           <BrandLogo
             color="white"
             orientation="horizontal"
             className="w-36 sm:w-44"
           />
           <div className="dashboard-header-nav hidden items-center gap-7 text-sm font-semibold text-slate-300 md:flex">
-            <button onClick={onOverviewClick} className="transition hover:text-white">Visão geral</button>
-            <button onClick={onCampaignsClick} className="transition hover:text-white">Campanhas</button>
-            <button onClick={onRankingsClick} className="transition hover:text-white">Rankings</button>
-            <button onClick={onTeamsClick} className="transition hover:text-white">Equipes</button>
-            <button onClick={onAssistantClick} className="transition hover:text-white">Assistente de IA</button>
+            <button type="button" onClick={onOverviewClick} className="transition-colors duration-200 hover:text-white">Visão geral</button>
+            <button type="button" onClick={onCampaignsClick} className="transition-colors duration-200 hover:text-white">Campanhas</button>
+            <button type="button" onClick={onRankingsClick} className="transition-colors duration-200 hover:text-white">Rankings</button>
+            <button type="button" onClick={onTeamsClick} className="transition-colors duration-200 hover:text-white">Equipes</button>
+            <button type="button" onClick={onAssistantClick} className="transition-colors duration-200 hover:text-white">Assistente de IA</button>
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={onAssistantClick}
-              className="dashboard-header-button grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white md:hidden"
+              className="dashboard-header-button grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-colors duration-200 hover:bg-white/10 hover:text-white md:hidden"
               aria-label="Abrir Assistente de IA"
             >
               <Bot className="h-4 w-4" />
             </button>
             <button
+              type="button"
               onClick={onAdminClick}
-              className="dashboard-header-button flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="dashboard-header-button flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition-colors duration-200 hover:bg-white/10 hover:text-white"
             >
               <Settings className="h-4 w-4" />
               <span className="hidden lg:inline">Administração</span>
@@ -64,8 +66,9 @@ export function DashboardHeader({
               </span>
             </div>
             <button
+              type="button"
               onClick={onSignOut}
-              className="dashboard-header-button flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="dashboard-header-button flex h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-300 transition-colors duration-200 hover:bg-white/10 hover:text-white"
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Sair</span>

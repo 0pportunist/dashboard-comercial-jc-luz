@@ -77,13 +77,13 @@ export function LoginPage() {
                 autoFocus
                 required
                 placeholder="Digite a senha administrativa"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-4 pr-12 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-4 pr-12 text-sm font-semibold outline-none transition-colors duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((current) => !current)}
                 aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-navy-900"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors duration-200 hover:text-navy-900"
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -93,7 +93,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={!password}
-            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-navy-900 px-4 py-3.5 text-sm font-black text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-navy-900 px-4 py-3.5 text-sm font-black text-white transition-colors duration-200 hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <LockKeyhole className="h-5 w-5" />
             Entrar

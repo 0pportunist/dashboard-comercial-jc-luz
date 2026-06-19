@@ -41,9 +41,9 @@ export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
       })
   }, [department, query, sort, teams])
 
-  const totalCollaborators = teams.reduce((sum, team) => sum + team.collaborators, 0)
-  const totalProduction = teams.reduce((sum, team) => sum + team.value, 0)
-  const leader = [...teams].sort((a, b) => b.value - a.value)[0]
+  const totalCollaborators = useMemo(() => teams.reduce((sum, team) => sum + team.collaborators, 0), [teams])
+  const totalProduction = useMemo(() => teams.reduce((sum, team) => sum + team.value, 0), [teams])
+  const leader = useMemo(() => [...teams].sort((a, b) => b.value - a.value)[0], [teams])
 
   return (
     <section>
@@ -58,6 +58,7 @@ export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            aria-label="Buscar equipe ou supervisor"
             placeholder="Buscar equipe ou supervisor..."
             className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm font-medium outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
           />
@@ -75,9 +76,11 @@ export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
         <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto">
           {(['Todos', 'Vendas G1', 'Vendas G2', 'Vendas Externas'] as DepartmentFilter[]).map((item) => (
             <button
+              type="button"
               key={item}
               onClick={() => setDepartment(item)}
-              className={`shrink-0 rounded-xl px-4 py-2.5 text-xs font-bold transition ${
+              aria-pressed={department === item}
+              className={`shrink-0 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors duration-200 ${
                 department === item ? 'bg-navy-900 text-white' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -86,6 +89,7 @@ export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
           ))}
         </div>
         <label className="relative shrink-0">
+          <span className="sr-only">Ordenar equipes</span>
           <ArrowDownUp className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
           <select
             value={sort}
