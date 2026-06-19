@@ -1,5 +1,6 @@
 import { BriefcaseBusiness, LayoutGrid } from 'lucide-react'
 import { administratorLogos } from '../data/administratorLogos'
+import { getBrandButtonStyle } from '../utils/brandButtonStyle'
 
 interface AdministratorFiltersProps {
   administrators: string[]
@@ -36,6 +37,7 @@ export function AdministratorFilters({
           {administrators.map((administrator) => {
             const logo = administratorLogos[administrator]
             const isSelected = selected === administrator
+            const activeStyle = getBrandButtonStyle(administrator, isSelected)
 
             return (
               <button
@@ -45,9 +47,10 @@ export function AdministratorFilters({
                 aria-label={`Filtrar campanhas da administradora ${administrator}`}
                 aria-pressed={isSelected}
                 title={administrator}
+                style={activeStyle}
                 className={`flex h-12 min-w-[132px] items-center justify-center rounded-xl border px-4 transition-colors duration-200 ${
                   isSelected
-                    ? 'border-[var(--dashboard-accent)] bg-[var(--dashboard-accent)] shadow-md'
+                    ? 'text-white'
                     : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50'
                 }`}
               >

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Building2, ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react'
 import { operatorLogos } from '../data/operatorLogos'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { getBrandButtonStyle } from '../utils/brandButtonStyle'
 
 interface OperatorFiltersProps {
   operators: string[]
@@ -100,6 +101,7 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
           {operators.map((operator) => {
             const logo = operatorLogos[operator]
             const isSelected = selected === operator
+            const activeStyle = getBrandButtonStyle(operator, isSelected)
 
             return (
               <button
@@ -110,10 +112,11 @@ export function OperatorFilters({ operators, selected, onChange }: OperatorFilte
                 aria-label={`Filtrar campanhas da ${operator}`}
                 aria-pressed={isSelected}
                 title={operator}
-                className={`flex h-12 min-w-[122px] shrink-0 items-center justify-center rounded-xl px-4 transition-colors duration-200 ${
+                style={activeStyle}
+                className={`flex h-12 min-w-[122px] shrink-0 items-center justify-center rounded-xl border px-4 transition-colors duration-200 ${
                   isSelected
-                    ? 'bg-[var(--dashboard-accent)] shadow-md'
-                    : 'bg-slate-50 hover:bg-slate-100'
+                    ? 'text-white'
+                    : 'border-transparent bg-slate-50 hover:bg-slate-100'
                 }`}
               >
                 {logo ? (
