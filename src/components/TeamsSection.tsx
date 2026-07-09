@@ -9,7 +9,8 @@ import {
   UsersRound,
 } from 'lucide-react'
 import { salesTeams } from '../data/teams'
-import type { SalesDepartment } from '../types'
+import type { SalesDepartment, SalesTeam } from '../types'
+import { getTeamLogo } from '../utils/getTeamLogo'
 
 const currency = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -20,14 +21,14 @@ const currency = new Intl.NumberFormat('pt-BR', {
 type DepartmentFilter = SalesDepartment | 'Todos'
 type SortOption = 'production' | 'collaborators' | 'name'
 
-export function TeamsSection() {
+export function TeamsSection({ teams = salesTeams }: { teams?: SalesTeam[] }) {
   const [department, setDepartment] = useState<DepartmentFilter>('Todos')
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<SortOption>('production')
 
   const filteredTeams = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
-    return salesTeams
+    return teams
       .filter((team) => department === 'Todos' || team.department === department)
       .filter((team) => {
         if (!normalizedQuery) return true
@@ -38,11 +39,11 @@ export function TeamsSection() {
         if (sort === 'name') return a.name.localeCompare(b.name, 'pt-BR')
         return b.value - a.value
       })
-  }, [department, query, sort])
+  }, [department, query, sort, teams])
 
-  const totalCollaborators = salesTeams.reduce((sum, team) => sum + team.collaborators, 0)
-  const totalProduction = salesTeams.reduce((sum, team) => sum + team.value, 0)
-  const leader = [...salesTeams].sort((a, b) => b.value - a.value)[0]
+  const totalCollaborators = teams.reduce((sum, team) => sum + team.collaborators, 0)
+  const totalProduction = teams.reduce((sum, team) => sum + team.value, 0)
+  const leader = [...teams].sort((a, b) => b.value - a.value)[0]
 
   return (
     <section>
@@ -64,10 +65,10 @@ export function TeamsSection() {
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard icon={BriefcaseBusiness} label="Equipes mapeadas" value={salesTeams.length.toString()} helper="G1, G2 e externas" />
+        <SummaryCard icon={BriefcaseBusiness} label="Equipes mapeadas" value={teams.length.toString()} helper="estrutura autorizada" />
         <SummaryCard icon={UsersRound} label="Colaboradores" value={totalCollaborators.toLocaleString('pt-BR')} helper="estrutura informada" />
         <SummaryCard icon={TrendingUp} label="Produção mapeada" value={currency.format(totalProduction)} helper="fechamento de maio" />
-        <SummaryCard icon={TrendingUp} label="Líder de produção" value={leader.name.replace('Equipe ', '')} helper={currency.format(leader.value)} />
+        <SummaryCard icon={TrendingUp} label="Líder de produção" value={leader?.name.replace('Equipe ', '') ?? 'Sem dados'} helper={leader ? currency.format(leader.value) : '—'} />
       </div>
 
       <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-card sm:flex-row sm:items-center">
@@ -105,8 +106,12 @@ export function TeamsSection() {
             <article key={team.id} className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-card">
               <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-5">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-navy-900 font-black text-limebrand">
-                    {team.name.replace('Equipe ', '').slice(0, 2).toUpperCase()}
+                  <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-100 bg-white p-1 shadow-sm">
+                    <img
+                      src={team.logo ?? getTeamLogo(team.name)}
+                      alt={`Logo da ${team.name}`}
+                      className="h-full w-full object-contain"
+                    />
                   </div>
                   <div className="min-w-0">
                     <h3 className="truncate font-black text-navy-950">{team.name}</h3>

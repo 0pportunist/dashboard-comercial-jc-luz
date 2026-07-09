@@ -5,3 +5,7 @@ dist
 *.log
 *.tsbuildinfo
 .logs
+.env
+.env.*
+!.env.example
+ACESSO-REDE-LOCAL.txt

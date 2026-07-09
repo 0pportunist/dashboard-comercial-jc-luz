@@ -2,17 +2,55 @@ $ErrorActionPreference = 'Stop'
 
 $projectPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $port = 5173
-$url = "http://127.0.0.1:$port"
+$localUrl = "http://localhost:$port"
+$hostUrl = "http://$($env:COMPUTERNAME):$port"
+$networkAddress = Get-NetIPAddress -AddressFamily IPv4 |
+  Where-Object {
+    $_.IPAddress -notlike '127.*' -and
+    $_.IPAddress -notlike '169.254.*' -and
+    $_.PrefixOrigin -ne 'WellKnown'
+  } |
+  Sort-Object InterfaceMetric |
+  Select-Object -First 1 -ExpandProperty IPAddress
+$networkUrl = if ($networkAddress) { "http://${networkAddress}:$port" } else { $null }
+$accessFile = Join-Path $projectPath 'ACESSO-REDE-LOCAL.txt'
 $logDirectory = Join-Path $projectPath '.logs'
 $stdoutLog = Join-Path $logDirectory 'vite.log'
 $stderrLog = Join-Path $logDirectory 'vite-error.log'
 
 New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
 
+function Write-AccessFile {
+  $lines = @(
+    'DASHBOARD COMERCIAL JC LUZ'
+    ''
+    "Neste computador: $localUrl/login"
+    "Nome da maquina: $hostUrl/login"
+  )
+
+  if ($networkUrl) {
+    $lines += "IP atual: $networkUrl/login"
+  }
+
+  $lines += @(
+    ''
+    'Compartilhe o endereco por nome ou o IP atual com quem estiver na mesma rede.'
+    'O IP pode mudar quando o computador ou roteador for reiniciado.'
+  )
+
+  Set-Content -LiteralPath $accessFile -Value $lines -Encoding UTF8
+}
+
 $listener = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
 if ($listener) {
-  Start-Process $url
-  Write-Host "Dashboard ja esta rodando em $url"
+  Write-AccessFile
+  Start-Process $localUrl
+  Write-Host "Dashboard ja esta rodando em $localUrl"
+  Write-Host "Endereco estavel na rede: $hostUrl"
+  if ($networkUrl) {
+    Write-Host "Acesso na rede local: $networkUrl"
+  }
+  Write-Host "Enderecos salvos em $accessFile"
   exit 0
 }
 
@@ -36,7 +74,7 @@ Remove-Item $stdoutLog, $stderrLog -Force -ErrorAction SilentlyContinue
 
 Start-Process `
   -FilePath $nodeExecutable `
-  -ArgumentList "`"$viteEntry`" --host 127.0.0.1 --port $port --strictPort" `
+  -ArgumentList "`"$viteEntry`" --host 0.0.0.0 --port $port --strictPort" `
   -WorkingDirectory $projectPath `
   -WindowStyle Hidden `
   -RedirectStandardOutput $stdoutLog `
@@ -45,14 +83,18 @@ Start-Process `
 $isReady = $false
 for ($attempt = 0; $attempt -lt 20; $attempt++) {
   Start-Sleep -Milliseconds 500
+  $client = [System.Net.Sockets.TcpClient]::new()
   try {
-    $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
-    if ($response.StatusCode -eq 200) {
-      $isReady = $true
-      break
-    }
+    $connectTask = $client.ConnectAsync('127.0.0.1', $port)
+    $isReady = $connectTask.Wait(1000) -and $client.Connected
   } catch {
-    # O Vite ainda esta inicializando.
+    $isReady = $false
+  } finally {
+    $client.Dispose()
+  }
+
+  if ($isReady) {
+    break
   }
 }
 
@@ -61,5 +103,11 @@ if (-not $isReady) {
   throw "O dashboard nao iniciou corretamente. Consulte $stderrLog. $details"
 }
 
-Start-Process $url
-Write-Host "Dashboard iniciado em $url"
+Write-AccessFile
+Start-Process $localUrl
+Write-Host "Dashboard iniciado em $localUrl"
+Write-Host "Endereco estavel na rede: $hostUrl"
+if ($networkUrl) {
+  Write-Host "Compartilhe com a equipe: $networkUrl"
+}
+Write-Host "Enderecos salvos em $accessFile"
